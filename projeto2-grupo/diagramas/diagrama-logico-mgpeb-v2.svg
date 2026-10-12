@@ -107,8 +107,8 @@
     <text class="eyebrow" x="108" y="56">REGRA DE LIBERACAO</text>
     <text class="panelTitle" x="58" y="136">Autorizar</text>
     <text class="formulaSage" x="58" y="190">A . B . C . D . E</text>
-    <text class="small" x="58" y="238">Todos os checks precisam resultar em 1.</text>
-    <text class="small" x="58" y="268">Se uma entrada falhar, o modulo nao pousa.</text>
+    <text class="small" x="58" y="238">Todos os checks devem ser 1.</text>
+    <text class="small" x="58" y="268">Falha trava o pouso.</text>
 
     <g transform="translate(390 78)">
       <text class="small" x="0" y="53">A</text>
@@ -148,8 +148,8 @@
     <text class="eyebrow" x="108" y="56">REGRA DE BLOQUEIO</text>
     <text class="panelTitle" x="58" y="136">Alerta</text>
     <text class="formulaClay" x="58" y="190">A' + B' + C' + D' + E'</text>
-    <text class="small" x="58" y="238">Qualquer check falso ja basta para travar.</text>
-    <text class="small" x="58" y="268">O modulo aguarda uma nova janela segura.</text>
+    <text class="small" x="58" y="238">Qualquer falso aciona alerta.</text>
+    <text class="small" x="58" y="268">Aguarda nova janela segura.</text>
 
     <g transform="translate(390 78)">
       <text class="small" x="0" y="53">A</text>
@@ -193,8 +193,8 @@
     </g>
   </g>
 
-  <g transform="translate(548 1350)">
-    <rect class="paper" x="0" y="0" width="950" height="116" rx="18"/>
+  <g transform="translate(548 1334)">
+    <rect class="paper" x="0" y="0" width="950" height="154" rx="18"/>
     <text class="eyebrow" x="38" y="48">SAIDA FINAL NO PROTOTIPO</text>
     <rect class="sageBox" x="38" y="68" width="184" height="28" rx="14"/>
     <text class="tiny" x="130" y="88" text-anchor="middle" fill="#53694f">POUSADO</text>
@@ -202,6 +202,6 @@
     <text class="tiny" x="354" y="88" text-anchor="middle" fill="#81601f">ESPERA</text>
     <rect class="clayBox" x="486" y="68" width="184" height="28" rx="14"/>
     <text class="tiny" x="578" y="88" text-anchor="middle" fill="#8d4b39">ALERTA</text>
-    <text class="tiny" x="710" y="88">resultado usado pelo codigo Python</text>
+    <text class="tiny" x="38" y="128">Resultado usado pelo codigo Python apos a avaliacao das regras.</text>
   </g>
 </svg>

@@ -616,9 +616,12 @@ def mostrarRegrasLogicas():
     print("C = areaCheck")
     print("D = sensCheck")
     print("E = massaCheck")
+    print("K = combustivel abaixo de 30%")
     print("\nAUTORIZAR = A . B . C . D . E")
-    print("ALERTA = NOT A OR NOT B OR NOT C OR NOT D OR NOT E")
+    print("ALERTA = (NOT A . K) + NOT D")
+    print("ESPERA = NOT (AUTORIZAR + ALERTA)")
     print("\nLeitura: o pouso so e autorizado quando todas as entradas sao verdadeiras.")
+    print("Alerta: combustivel critico ou sensores com falha. Espera: qualquer outra falha.")
 
 
 def mostrarResumoFinal():

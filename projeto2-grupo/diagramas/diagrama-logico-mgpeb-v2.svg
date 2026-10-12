@@ -1,0 +1,186 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1600" viewBox="0 0 1600 1600">
+  <defs>
+    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="14" stdDeviation="14" flood-color="#1f2933" flood-opacity="0.13"/>
+    </filter>
+    <marker id="arrowGreen" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M 1 1 L 11 6 L 1 11 Z" fill="#118c6b"/>
+    </marker>
+    <marker id="arrowRed" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M 1 1 L 11 6 L 1 11 Z" fill="#c9344b"/>
+    </marker>
+    <style>
+      .bg { fill: #f4f6f8; }
+      .panel { fill: #ffffff; stroke: #d4dae0; stroke-width: 2; filter: url(#softShadow); }
+      .mutedPanel { fill: #edf1f4; stroke: #d4dae0; stroke-width: 2; }
+      .title { font-family: Arial, Helvetica, sans-serif; font-size: 58px; font-weight: 800; fill: #26313d; }
+      .subtitle { font-family: Arial, Helvetica, sans-serif; font-size: 24px; fill: #586775; }
+      .section { font-family: Arial, Helvetica, sans-serif; font-size: 18px; font-weight: 800; letter-spacing: 3px; fill: #687684; }
+      .ruleTitle { font-family: Arial, Helvetica, sans-serif; font-size: 46px; font-weight: 800; fill: #26313d; }
+      .label { font-family: Arial, Helvetica, sans-serif; font-size: 23px; fill: #394653; }
+      .small { font-family: Arial, Helvetica, sans-serif; font-size: 18px; fill: #62707d; }
+      .formula { font-family: Arial, Helvetica, sans-serif; font-size: 28px; font-weight: 800; fill: #087b79; }
+      .formulaRed { font-family: Arial, Helvetica, sans-serif; font-size: 28px; font-weight: 800; fill: #b42d43; }
+      .pillText { font-family: Arial, Helvetica, sans-serif; font-size: 18px; font-weight: 800; fill: #ffffff; }
+      .gateText { font-family: Arial, Helvetica, sans-serif; font-size: 20px; font-weight: 800; fill: #27313b; }
+      .bus { stroke: #73808c; stroke-width: 3; fill: none; stroke-linecap: round; }
+      .line { stroke: #73808c; stroke-width: 3; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+      .greenLine { stroke: #118c6b; stroke-width: 5; fill: none; stroke-linecap: round; marker-end: url(#arrowGreen); }
+      .redLine { stroke: #c9344b; stroke-width: 5; fill: none; stroke-linecap: round; marker-end: url(#arrowRed); }
+      .gate { fill: #ffffff; stroke: #27313b; stroke-width: 4; }
+      .notDot { fill: #ffffff; stroke: #27313b; stroke-width: 3; }
+      .greenBox { fill: #e8f6f0; stroke: #118c6b; stroke-width: 3; }
+      .redBox { fill: #fff0f2; stroke: #c9344b; stroke-width: 3; }
+      .amberBox { fill: #fff6df; stroke: #f0a202; stroke-width: 3; }
+      .node { fill: #27313b; }
+    </style>
+  </defs>
+
+  <rect class="bg" width="1600" height="1600"/>
+
+  <text class="section" x="96" y="98">GRUPO 42 | AURORA SIGER</text>
+  <text class="title" x="96" y="170">Diagrama logico do MGPEB</text>
+  <text class="subtitle" x="98" y="216">Regras de decisao para autorizar, adiar ou colocar um modulo em alerta na aproximacao a Marte.</text>
+
+  <g transform="translate(96 282)">
+    <rect class="panel" x="0" y="0" width="390" height="1128" rx="24"/>
+    <text class="section" x="34" y="56">ENTRADAS</text>
+    <text class="subtitle" x="34" y="96">Checks usados pelo codigo</text>
+
+    <g transform="translate(36 160)">
+      <circle cx="24" cy="24" r="24" fill="#087b79"/>
+      <text class="pillText" x="24" y="31" text-anchor="middle">A</text>
+      <text class="label" x="72" y="20">combCheck</text>
+      <text class="small" x="72" y="48">combustivel suficiente</text>
+    </g>
+
+    <g transform="translate(36 300)">
+      <circle cx="24" cy="24" r="24" fill="#f0a202"/>
+      <text class="pillText" x="24" y="31" text-anchor="middle">B</text>
+      <text class="label" x="72" y="20">atmCheck</text>
+      <text class="small" x="72" y="48">atmosfera estavel</text>
+    </g>
+
+    <g transform="translate(36 440)">
+      <circle cx="24" cy="24" r="24" fill="#118c6b"/>
+      <text class="pillText" x="24" y="31" text-anchor="middle">C</text>
+      <text class="label" x="72" y="20">areaCheck</text>
+      <text class="small" x="72" y="48">area de pouso livre</text>
+    </g>
+
+    <g transform="translate(36 580)">
+      <circle cx="24" cy="24" r="24" fill="#5568a6"/>
+      <text class="pillText" x="24" y="31" text-anchor="middle">D</text>
+      <text class="label" x="72" y="20">sensCheck</text>
+      <text class="small" x="72" y="48">sensores integros</text>
+    </g>
+
+    <g transform="translate(36 720)">
+      <circle cx="24" cy="24" r="24" fill="#c9344b"/>
+      <text class="pillText" x="24" y="31" text-anchor="middle">E</text>
+      <text class="label" x="72" y="20">massaCheck</text>
+      <text class="small" x="72" y="48">massa dentro do limite</text>
+    </g>
+
+    <rect class="mutedPanel" x="34" y="890" width="322" height="156" rx="16"/>
+    <text class="small" x="58" y="928">Cada check vira 1 ou 0 antes</text>
+    <text class="small" x="58" y="960">de passar pelas portas logicas.</text>
+    <text class="small" x="58" y="992">Essa leitura conversa direto</text>
+    <text class="small" x="58" y="1024">com os IFs do prototipo.</text>
+  </g>
+
+  <g transform="translate(548 282)">
+    <rect class="panel" x="0" y="0" width="950" height="480" rx="26"/>
+    <text class="section" x="42" y="62">REGRA 01</text>
+    <text class="ruleTitle" x="42" y="124">AUTORIZAR</text>
+    <text class="formula" x="42" y="174">A . B . C . D . E</text>
+    <text class="small" x="42" y="222">Todos os checks precisam dar 1.</text>
+    <text class="small" x="42" y="252">Com isso, a fila libera o pouso.</text>
+
+    <line class="bus" x1="426" y1="116" x2="426" y2="316"/>
+    <circle class="node" cx="426" cy="116" r="5"/>
+    <circle class="node" cx="426" cy="166" r="5"/>
+    <circle class="node" cx="426" cy="216" r="5"/>
+    <circle class="node" cx="426" cy="266" r="5"/>
+    <circle class="node" cx="426" cy="316" r="5"/>
+
+    <text class="small" x="380" y="122">A</text>
+    <text class="small" x="380" y="172">B</text>
+    <text class="small" x="380" y="222">C</text>
+    <text class="small" x="380" y="272">D</text>
+    <text class="small" x="380" y="322">E</text>
+    <line class="line" x1="402" y1="116" x2="560" y2="116"/>
+    <line class="line" x1="402" y1="166" x2="560" y2="166"/>
+    <line class="line" x1="402" y1="216" x2="560" y2="216"/>
+    <line class="line" x1="402" y1="266" x2="560" y2="266"/>
+    <line class="line" x1="402" y1="316" x2="560" y2="316"/>
+
+    <path class="gate" d="M 560 86 L 636 86 Q 742 86 742 216 Q 742 346 636 346 L 560 346 Z"/>
+    <text class="gateText" x="662" y="224" text-anchor="middle">AND</text>
+
+    <line class="greenLine" x1="742" y1="216" x2="812" y2="216"/>
+    <rect class="greenBox" x="826" y="154" width="86" height="124" rx="18"/>
+    <text class="section" x="848" y="194" fill="#118c6b">1</text>
+    <text class="small" x="848" y="230">pouso</text>
+    <text class="small" x="848" y="258">liberado</text>
+  </g>
+
+  <g transform="translate(548 824)">
+    <rect class="panel" x="0" y="0" width="950" height="480" rx="26"/>
+    <text class="section" x="42" y="62">REGRA 02</text>
+    <text class="ruleTitle" x="42" y="124">ALERTA</text>
+    <text class="formulaRed" x="42" y="174">A' + B' + C' + D' + E'</text>
+    <text class="small" x="42" y="222">Qualquer check falso aciona alerta.</text>
+    <text class="small" x="42" y="252">O modulo espera nova janela segura.</text>
+
+    <text class="small" x="380" y="122">A</text>
+    <text class="small" x="380" y="172">B</text>
+    <text class="small" x="380" y="222">C</text>
+    <text class="small" x="380" y="272">D</text>
+    <text class="small" x="380" y="322">E</text>
+
+    <line class="line" x1="402" y1="116" x2="492" y2="116"/>
+    <line class="line" x1="402" y1="166" x2="492" y2="166"/>
+    <line class="line" x1="402" y1="216" x2="492" y2="216"/>
+    <line class="line" x1="402" y1="266" x2="492" y2="266"/>
+    <line class="line" x1="402" y1="316" x2="492" y2="316"/>
+
+    <polygon class="gate" points="492,94 548,116 492,138"/>
+    <circle class="notDot" cx="558" cy="116" r="8"/>
+    <polygon class="gate" points="492,144 548,166 492,188"/>
+    <circle class="notDot" cx="558" cy="166" r="8"/>
+    <polygon class="gate" points="492,194 548,216 492,238"/>
+    <circle class="notDot" cx="558" cy="216" r="8"/>
+    <polygon class="gate" points="492,244 548,266 492,288"/>
+    <circle class="notDot" cx="558" cy="266" r="8"/>
+    <polygon class="gate" points="492,294 548,316 492,338"/>
+    <circle class="notDot" cx="558" cy="316" r="8"/>
+
+    <line class="line" x1="566" y1="116" x2="628" y2="116"/>
+    <line class="line" x1="566" y1="166" x2="628" y2="166"/>
+    <line class="line" x1="566" y1="216" x2="628" y2="216"/>
+    <line class="line" x1="566" y1="266" x2="628" y2="266"/>
+    <line class="line" x1="566" y1="316" x2="628" y2="316"/>
+
+    <path class="gate" d="M 628 86 C 720 140 754 186 754 216 C 754 246 720 292 628 346 C 686 262 686 170 628 86 Z"/>
+    <text class="gateText" x="704" y="224" text-anchor="middle">OR</text>
+
+    <line class="redLine" x1="754" y1="216" x2="812" y2="216"/>
+    <rect class="redBox" x="826" y="154" width="86" height="124" rx="18"/>
+    <text class="section" x="848" y="194" fill="#c9344b">!</text>
+    <text class="small" x="848" y="230">alerta</text>
+    <text class="small" x="848" y="258">ativo</text>
+  </g>
+
+  <g transform="translate(548 1340)">
+    <rect class="panel" x="0" y="0" width="950" height="160" rx="22"/>
+    <text class="section" x="38" y="50">SAIDA FINAL NO PROTOTIPO</text>
+    <rect class="greenBox" x="38" y="72" width="208" height="34" rx="17"/>
+    <text class="small" x="70" y="95" fill="#118c6b">POUSADO</text>
+    <rect class="amberBox" x="286" y="72" width="208" height="34" rx="17"/>
+    <text class="small" x="324" y="95" fill="#a96f00">ESPERA</text>
+    <rect class="redBox" x="534" y="72" width="208" height="34" rx="17"/>
+    <text class="small" x="574" y="95" fill="#c9344b">ALERTA</text>
+    <text class="small" x="38" y="132">Resultado usado pelo codigo Python apos a avaliacao das regras.</text>
+  </g>
+</svg>

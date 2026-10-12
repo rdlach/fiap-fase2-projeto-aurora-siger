@@ -1,0 +1,20 @@
+.DS_Store
+__pycache__/
+*.py[cod]
+
+# Rascunho visual descartado; a versao usada no relatorio e a v2.
+projeto2-grupo/diagramas/diagrama-logico-mgpeb.svg
+projeto2-grupo/diagramas/diagrama-logico-mgpeb.svg.png
+
+# Materiais de estudo e apostilas locais da fase.
+# O repositorio fica focado no projeto entregue pelo grupo.
+Apanhado Geral - Estudos/
+Quiz - A Aurora Ajusta a Trajetoria/
+Cap1/
+Cap2/
+Cap3/
+Cap4/
+CAP 05/
+CAP 06/
+CAP 07/
+CAP 08/

@@ -15,8 +15,26 @@ python3 projeto2-grupo/aurora_siger_pt2.py
 - `projeto2-grupo/aurora_siger_pt2.py`: prototipo em Python com menu, modo base, modo randomico e modo manual.
 - `projeto2-grupo/diagramas/diagrama-logico-mgpeb-v3.svg` e `.png`: folha 1, circuito logico da decisao de pouso (portas AND, OR, NOT e NOR). O PNG esta em 2x, para uso no relatorio.
 - `projeto2-grupo/diagramas/diagrama-fluxo-mgpeb.svg` e `.png`: folha 2, fluxo da simulacao (cenario, fila FIFO, avaliacao, listas e pilha de alertas).
+- `projeto2-grupo/diagramas/diagramas-mgpeb.drawio`: as duas folhas em formato editavel do draw.io (uma pagina por folha). Abra em https://app.diagrams.net
+
+- `projeto2-grupo/relatorio/relatorio_mgpeb.pdf`: relatorio tecnico final (7 paginas).
+- `projeto2-grupo/relatorio/relatorio_mgpeb.docx`: o mesmo relatorio em Word, para editar, com as mesmas fontes (embutidas no arquivo), medidas e quebras de pagina do PDF (gerado por `gerar_docx_relatorio.py`, que usa `python-docx` e `fonttools`).
+- `projeto2-grupo/relatorio/relatorio_mgpeb.md`: texto do relatorio; edite aqui e gere o PDF de novo.
+- `projeto2-grupo/relatorio/gerar_pdf_relatorio.py`: gera o PDF a partir do `.md` (usa `reportlab`).
+- `projeto2-grupo/relatorio/gerar_grafico_descida.py`: gera a Figura 2 em `relatorio/figuras/` (usa `matplotlib`).
 
 A versao anterior (`diagrama-logico-mgpeb-v2.svg`) fica so como historico.
+
+## Como gerar o relatorio
+
+O prototipo nao usa bibliotecas externas. Apenas os scripts do relatorio precisam de `reportlab` e `matplotlib`:
+
+```bash
+pip install reportlab matplotlib
+cd projeto2-grupo/relatorio
+python3 gerar_grafico_descida.py
+python3 gerar_pdf_relatorio.py
+```
 
 ## Regras logicas
 

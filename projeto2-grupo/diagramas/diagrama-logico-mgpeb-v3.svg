@@ -80,10 +80,10 @@
 <text x="1380" y="596" font-family="Menlo, 'Courier New', monospace" font-size="15" font-weight="bold" fill="#1d1d1b" text-anchor="start" font-style="normal" letter-spacing="0">ESPERA  =  (AUTORIZAR + F)'</text>
 <text x="1626" y="459" font-family="Georgia, 'Times New Roman', serif" font-size="30" font-weight="bold" fill="#2f6b3c" text-anchor="start" font-style="normal" letter-spacing="0">POUSADO</text>
 <text x="1626" y="483" font-family="Menlo, 'Courier New', monospace" font-size="13" font-weight="normal" fill="#6b675d" text-anchor="start" font-style="normal" letter-spacing="0">AUTORIZADO → modsPousados</text>
-<text x="1626" y="513" font-family="'Bradley Hand', 'Noteworthy', 'Marker Felt', cursive" font-size="21" font-weight="normal" fill="#2b4c9b" text-anchor="start" font-style="normal" letter-spacing="0">base: M02, M01, M03</text>
+<text x="1626" y="513" font-family="'Bradley Hand', 'Noteworthy', 'Marker Felt', cursive" font-size="21" font-weight="normal" fill="#2b4c9b" text-anchor="start" font-style="normal" letter-spacing="0">base: M02, M01</text>
 <text x="1626" y="682" font-family="Georgia, 'Times New Roman', serif" font-size="30" font-weight="bold" fill="#a86f12" text-anchor="start" font-style="normal" letter-spacing="0">ESPERA</text>
 <text x="1626" y="706" font-family="Menlo, 'Courier New', monospace" font-size="13" font-weight="normal" fill="#6b675d" text-anchor="start" font-style="normal" letter-spacing="0">pouso adiado → modsEspera</text>
-<text x="1626" y="736" font-family="'Bradley Hand', 'Noteworthy', 'Marker Felt', cursive" font-size="21" font-weight="normal" fill="#2b4c9b" text-anchor="start" font-style="normal" letter-spacing="0">base: nenhum</text>
+<text x="1626" y="736" font-family="'Bradley Hand', 'Noteworthy', 'Marker Felt', cursive" font-size="21" font-weight="normal" fill="#2b4c9b" text-anchor="start" font-style="normal" letter-spacing="0">base: M03</text>
 <text x="1626" y="879.5" font-family="Georgia, 'Times New Roman', serif" font-size="30" font-weight="bold" fill="#b3261e" text-anchor="start" font-style="normal" letter-spacing="0">ALERTA</text>
 <text x="1626" y="903.5" font-family="Menlo, 'Courier New', monospace" font-size="13" font-weight="normal" fill="#6b675d" text-anchor="start" font-style="normal" letter-spacing="0">revisão → modsAlerta + pilha</text>
 <text x="1626" y="933.5" font-family="'Bradley Hand', 'Noteworthy', 'Marker Felt', cursive" font-size="21" font-weight="normal" fill="#2b4c9b" text-anchor="start" font-style="normal" letter-spacing="0">base: M05 e M04</text>
@@ -133,15 +133,14 @@
 <text x="360" y="1082" font-family="Menlo, 'Courier New', monospace" font-size="16" font-weight="normal" fill="#1d1d1b" text-anchor="middle" font-style="normal" letter-spacing="0">1</text>
 <text x="414" y="1082" font-family="Menlo, 'Courier New', monospace" font-size="16" font-weight="bold" fill="#b3261e" text-anchor="middle" font-style="normal" letter-spacing="0">1</text>
 <text x="470" y="1082" font-family="Menlo, 'Courier New', monospace" font-size="16" font-weight="bold" fill="#b3261e" text-anchor="start" font-style="normal" letter-spacing="0">ALERTA</text>
-<text x="60" y="1112" font-family="Menlo, 'Courier New', monospace" font-size="16" font-weight="normal" fill="#1d1d1b" text-anchor="start" font-style="normal" letter-spacing="0">vento 22 m/s</text>
-<text x="232" y="1112" font-family="Menlo, 'Courier New', monospace" font-size="16" font-weight="normal" fill="#1d1d1b" text-anchor="middle" font-style="normal" letter-spacing="0">1</text>
-<text x="264" y="1112" font-family="Menlo, 'Courier New', monospace" font-size="16" font-weight="bold" fill="#b3261e" text-anchor="middle" font-style="normal" letter-spacing="0">0</text>
+<text x="60" y="1112" font-family="Menlo, 'Courier New', monospace" font-size="16" font-weight="normal" fill="#1d1d1b" text-anchor="start" font-style="normal" letter-spacing="0">M03</text>
+<text x="232" y="1112" font-family="Menlo, 'Courier New', monospace" font-size="16" font-weight="bold" fill="#b3261e" text-anchor="middle" font-style="normal" letter-spacing="0">0</text>
+<text x="264" y="1112" font-family="Menlo, 'Courier New', monospace" font-size="16" font-weight="normal" fill="#1d1d1b" text-anchor="middle" font-style="normal" letter-spacing="0">1</text>
 <text x="296" y="1112" font-family="Menlo, 'Courier New', monospace" font-size="16" font-weight="normal" fill="#1d1d1b" text-anchor="middle" font-style="normal" letter-spacing="0">1</text>
 <text x="328" y="1112" font-family="Menlo, 'Courier New', monospace" font-size="16" font-weight="normal" fill="#1d1d1b" text-anchor="middle" font-style="normal" letter-spacing="0">1</text>
 <text x="360" y="1112" font-family="Menlo, 'Courier New', monospace" font-size="16" font-weight="normal" fill="#1d1d1b" text-anchor="middle" font-style="normal" letter-spacing="0">1</text>
 <text x="414" y="1112" font-family="Menlo, 'Courier New', monospace" font-size="16" font-weight="normal" fill="#1d1d1b" text-anchor="middle" font-style="normal" letter-spacing="0">0</text>
 <text x="470" y="1112" font-family="Menlo, 'Courier New', monospace" font-size="16" font-weight="bold" fill="#a86f12" text-anchor="start" font-style="normal" letter-spacing="0">ESPERA</text>
-<text x="580" y="1114" font-family="'Bradley Hand', 'Noteworthy', 'Marker Felt', cursive" font-size="18" font-weight="normal" fill="#2b4c9b" text-anchor="start" font-style="normal" letter-spacing="0">← hipótese: o modo base não tem ESPERA</text>
 <circle cx="66" cy="1153" r="4" fill="#1d1d1b"/>
 <text x="78" y="1158" font-family="Menlo, 'Courier New', monospace" font-size="13" font-weight="normal" fill="#6b675d" text-anchor="start" font-style="normal" letter-spacing="0">fios ligados</text>
 <path d="M214,1153 H225 A6,6 0 0 1 237,1153 H248" fill="none" stroke="#1d1d1b" stroke-width="1.8"/>

@@ -80,7 +80,7 @@ modLab = {
     "nome": "Lab Ares",
     "tipo": "LAB",
     "prio": 3,
-    "comb": 41,
+    "comb": 33,
     "massa": 7600,
     "crit": 3,
     "horaOrb": "08:24",
@@ -193,7 +193,7 @@ def aplicarModoBase():
 
     ajustarMod(modHab, 1, 62, 9200, 5, "FUNCIONAIS")
     ajustarMod(modEnergia, 1, 54, 8700, 5, "FUNCIONAIS")
-    ajustarMod(modLab, 3, 41, 7600, 3, "FUNCIONAIS")
+    ajustarMod(modLab, 3, 33, 7600, 3, "FUNCIONAIS")
     ajustarMod(modLog, 4, 28, 10800, 2, "FUNCIONAIS")
     ajustarMod(modMed, 2, 47, 6900, 4, "FALHA PARCIAL")
 

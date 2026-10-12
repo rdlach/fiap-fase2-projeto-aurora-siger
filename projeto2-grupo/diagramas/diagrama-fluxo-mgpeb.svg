@@ -72,7 +72,7 @@
 <text x="485" y="558" font-family="Menlo, 'Courier New', monospace" font-size="12" font-weight="normal" fill="#6b675d" text-anchor="middle" font-style="normal" letter-spacing="0">4</text>
 <path d="M540,460 L540,540" fill="none" stroke="#1d1d1b" stroke-width="1.4" stroke-linejoin="miter" stroke-linecap="butt"/>
 <text x="595" y="497" font-family="Menlo, 'Courier New', monospace" font-size="21" font-weight="bold" fill="#1d1d1b" text-anchor="middle" font-style="normal" letter-spacing="0">M03</text>
-<text x="595" y="520" font-family="Menlo, 'Courier New', monospace" font-size="12" font-weight="normal" fill="#6b675d" text-anchor="middle" font-style="normal" letter-spacing="0">p3 c3 41%</text>
+<text x="595" y="520" font-family="Menlo, 'Courier New', monospace" font-size="12" font-weight="normal" fill="#6b675d" text-anchor="middle" font-style="normal" letter-spacing="0">p3 c3 33%</text>
 <text x="595" y="558" font-family="Menlo, 'Courier New', monospace" font-size="12" font-weight="normal" fill="#6b675d" text-anchor="middle" font-style="normal" letter-spacing="0">3</text>
 <path d="M650,460 L650,540" fill="none" stroke="#1d1d1b" stroke-width="1.4" stroke-linejoin="miter" stroke-linecap="butt"/>
 <text x="705" y="497" font-family="Menlo, 'Courier New', monospace" font-size="21" font-weight="bold" fill="#1d1d1b" text-anchor="middle" font-style="normal" letter-spacing="0">M05</text>
@@ -124,13 +124,11 @@
 <rect x="1530" y="316" width="90" height="48" fill="#f8f6f0" stroke="#1d1d1b" stroke-width="2.2"/>
 <text x="1575" y="338" font-family="Menlo, 'Courier New', monospace" font-size="18" font-weight="bold" fill="#1d1d1b" text-anchor="middle" font-style="normal" letter-spacing="0">M01</text>
 <text x="1575" y="355" font-family="Menlo, 'Courier New', monospace" font-size="11" font-weight="normal" fill="#6b675d" text-anchor="middle" font-style="normal" letter-spacing="0">Orion</text>
-<rect x="1620" y="316" width="90" height="48" fill="#f8f6f0" stroke="#1d1d1b" stroke-width="2.2"/>
-<text x="1665" y="338" font-family="Menlo, 'Courier New', monospace" font-size="18" font-weight="bold" fill="#1d1d1b" text-anchor="middle" font-style="normal" letter-spacing="0">M03</text>
-<text x="1665" y="355" font-family="Menlo, 'Courier New', monospace" font-size="11" font-weight="normal" fill="#6b675d" text-anchor="middle" font-style="normal" letter-spacing="0">Ares</text>
 <text x="1440" y="460" font-family="Georgia, 'Times New Roman', serif" font-size="26" font-weight="bold" fill="#a86f12" text-anchor="start" font-style="normal" letter-spacing="0">ESPERA</text>
 <text x="1710" y="460" font-family="Menlo, 'Courier New', monospace" font-size="13" font-weight="normal" fill="#6b675d" text-anchor="end" font-style="normal" letter-spacing="0">modsEspera</text>
-<rect x="1440" y="476" width="90" height="48" fill="#f8f6f0" stroke="#6b675d" stroke-width="1.8" stroke-dasharray="6 5"/>
-<text x="1485" y="505" font-family="'Bradley Hand', 'Noteworthy', 'Marker Felt', cursive" font-size="21" font-weight="normal" fill="#2b4c9b" text-anchor="middle" font-style="normal" letter-spacing="0">vazia</text>
+<rect x="1440" y="476" width="90" height="48" fill="#f8f6f0" stroke="#1d1d1b" stroke-width="2.2"/>
+<text x="1485" y="498" font-family="Menlo, 'Courier New', monospace" font-size="18" font-weight="bold" fill="#1d1d1b" text-anchor="middle" font-style="normal" letter-spacing="0">M03</text>
+<text x="1485" y="515" font-family="Menlo, 'Courier New', monospace" font-size="11" font-weight="normal" fill="#6b675d" text-anchor="middle" font-style="normal" letter-spacing="0">Ares</text>
 <text x="1440" y="620" font-family="Georgia, 'Times New Roman', serif" font-size="26" font-weight="bold" fill="#b3261e" text-anchor="start" font-style="normal" letter-spacing="0">ALERTA</text>
 <text x="1710" y="620" font-family="Menlo, 'Courier New', monospace" font-size="13" font-weight="normal" fill="#6b675d" text-anchor="end" font-style="normal" letter-spacing="0">modsAlerta</text>
 <rect x="1440" y="636" width="90" height="48" fill="#f8f6f0" stroke="#1d1d1b" stroke-width="2.2"/>

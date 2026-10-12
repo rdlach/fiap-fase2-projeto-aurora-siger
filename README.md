@@ -1,6 +1,6 @@
 # FIAP Fase 2 - Projeto Aurora Siger
 
-Projeto em Python para a atividade **A Aurora Ajusta a Trajetoria na Aproximacao a Marte - MGPEB**.
+Projeto da Fase 2 da FIAP: relatorio operacional de pouso para a atividade **A Aurora Ajusta a Trajetoria na Aproximacao a Marte - MGPEB**.
 
 O prototipo simula um Modulo de Gerenciamento de Pouso e Estabilizacao de Base, organizando modulos de pouso em fila, aplicando regras logicas de autorizacao e classificando o resultado em pousado, espera ou alerta.
 

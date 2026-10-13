@@ -10,6 +10,7 @@ tabelas (|), blocos de codigo (```) e imagens (![legenda](caminho)).
 """
 
 import re
+import os
 from pathlib import Path
 
 from reportlab.lib import colors
@@ -39,7 +40,11 @@ RODAPE = "Projeto Aurora Siger - Relatório Técnico do MGPEB - Fase 2"
 
 # Fontes DejaVu: cobrem simbolos como ≥, ≤, −, ·, √ e ≈, que as fontes
 # padrao do PDF nao desenham. Caem para Helvetica se nao estiverem instaladas.
-PASTA_FONTES = Path("/usr/share/fonts/truetype/dejavu")
+PASTA_FONTES = Path(os.environ.get("MGPEB_FONTES", "/usr/share/fonts/truetype/dejavu"))
+if not (PASTA_FONTES / "DejaVuSans.ttf").exists():
+    # Matplotlib ja e usado no gerador do grafico e inclui as fontes DejaVu.
+    import matplotlib
+    PASTA_FONTES = Path(matplotlib.get_data_path()) / "fonts" / "ttf"
 try:
     pdfmetrics.registerFont(TTFont("Texto", str(PASTA_FONTES / "DejaVuSans.ttf")))
     pdfmetrics.registerFont(TTFont("Texto-Negrito", str(PASTA_FONTES / "DejaVuSans-Bold.ttf")))

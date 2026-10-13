@@ -317,11 +317,99 @@ def prepararFilaOrdenada():
     # Junta duas etapas que sempre caminham juntas na demonstracao:
     # carregar a fila e aplicar a ordenacao por prioridade.
     carregarFila()
+    ordenarFilaAtual()
+
+
+def ordenarFilaAtual():
+    # Ordena sem reiniciar os resultados da operacao em andamento.
     filaOrd = ordenarFilaPorPrio(filaPouso)
     filaPouso.clear()
 
     for mod in filaOrd:
         filaPouso.append(mod)
+
+
+def lerSimNao(msg):
+    # Uma resposta invalida nao deve liberar a revisao de um alerta.
+    while True:
+        resposta = lerTexto(msg)
+        if resposta == "S" or resposta == "N":
+            return resposta
+        print("Digite S ou N.")
+
+
+def ajustarPendente(mod):
+    global modoDados
+
+    # Altera a copia operacional; o cadastro base continua disponivel para reinicio.
+    mostrarModulo(mod)
+    if lerSimNao("Ajustar os dados deste modulo? S ou N: ") == "S":
+        mod["prio"] = lerInt("Prioridade de pouso 1 a 5: ", 1, 5)
+        mod["crit"] = lerInt("Criticidade da carga 1 a 5: ", 1, 5)
+        mod["comb"] = lerInt("Combustivel percentual 0 a 100: ", 0, 100)
+        mod["massa"] = lerInt("Massa em kg 1000 a 20000: ", 1000, 20000)
+        if lerSimNao("Sensores FUNCIONAIS? S ou N: ") == "S":
+            mod["sens"] = "FUNCIONAIS"
+        else:
+            mod["sens"] = "FALHA PARCIAL"
+        modoDados = "MANUAL"
+
+
+def devolverPendente(mod):
+    # Confere o ID antes de inserir, para nao duplicar um modulo na fila.
+    for item in filaPouso:
+        if item["id"] == mod["id"]:
+            return
+    mod["status"] = "EM FILA"
+    filaPouso.append(mod)
+
+
+def reavaliarPendentes():
+    global filaProcessadaCheck, modoDados
+    global condAtm, areaPouso, ventoMs, visibKm, semPoeiraCheck
+
+    mostrarTitulo("REAVALIACAO DOS MODULOS PENDENTES")
+    if len(modsEspera) == 0 and len(modsAlerta) == 0:
+        print("Nenhum modulo pendente para reavaliar.")
+        return
+
+    if lerSimNao("Atualizar as condicoes do ambiente? S ou N: ") == "S":
+        condAtm = "INSTAVEL"
+        if lerSimNao("Atmosfera ESTAVEL? S ou N: ") == "S":
+            condAtm = "ESTAVEL"
+        areaPouso = "OCUPADA"
+        if lerSimNao("Area de pouso LIVRE? S ou N: ") == "S":
+            areaPouso = "LIVRE"
+        ventoMs = lerInt("Vento em m/s de 0 a 80: ", 0, 80)
+        visibKm = lerInt("Visibilidade em km de 0 a 50: ", 0, 50)
+        semPoeiraCheck = lerSimNao("Sem tempestade de poeira? S ou N: ") == "S"
+        modoDados = "MANUAL"
+
+    for mod in modsEspera:
+        ajustarPendente(mod)
+        devolverPendente(mod)
+    modsEspera.clear()
+
+    alertasMantidos = []
+    for mod in modsAlerta:
+        print(f"\nAlerta pendente: {mod['id']} - {mod['nome']}")
+        if lerSimNao("Revisao realizada para nova tentativa? S ou N: ") == "S":
+            ajustarPendente(mod)
+            devolverPendente(mod)
+        else:
+            alertasMantidos.append(mod)
+    modsAlerta.clear()
+    for mod in alertasMantidos:
+        modsAlerta.append(mod)
+
+    # Preserva os pousados e a pilha. A revisao nao dispensa os checks de seguranca.
+    if len(filaPouso) > 0:
+        ordenarFilaAtual()
+        filaProcessadaCheck = False
+        processarFila()
+    else:
+        print("Nenhum modulo liberado para nova avaliacao.")
+    mostrarResumoFinal()
 
 
 def mostrarModulo(mod):
@@ -468,7 +556,15 @@ def avaliarPouso(mod):
     if autPouso:
         return "AUTORIZADO", "Todas as condicoes de pouso foram atendidas.", checks
     elif falhaCritica:
-        return "ALERTA", "Modulo exige revisao antes de nova tentativa de pouso.", checks
+        # Registra cada causa critica, inclusive quando as duas ocorrem juntas.
+        motivo = ""
+        if not checks["combCheck"] and mod["comb"] < 30:
+            motivo = f"Combustivel critico: {mod['comb']}%, abaixo de 30%."
+        if not checks["sensCheck"]:
+            if motivo != "":
+                motivo = motivo + " "
+            motivo = motivo + f"Sensores com falha: {mod['sens']}."
+        return "ALERTA", motivo, checks
     else:
         return "ESPERA", "Pouso adiado ate normalizacao das condicoes.", checks
 
@@ -635,12 +731,13 @@ def mostrarMenu():
     print("\nEscolha uma opcao do MGPEB:")
     print("1 - Mostrar regras logicas")
     print("2 - Executar buscas lineares")
-    print("3 - Carregar fila ordenada")
+    print("3 - Reiniciar simulacao e carregar fila ordenada")
     print("4 - Processar fila de pouso")
     print("5 - Mostrar resumo final")
     print("6 - Mostrar modelo matematico")
-    print("7 - Executar demonstracao completa")
-    print("8 - Escolher modo de dados")
+    print("7 - Reiniciar e executar demonstracao completa")
+    print("8 - Escolher modo de dados e reiniciar simulacao")
+    print("9 - Reavaliar modulos pendentes (preserva pousados e historico)")
     print("0 - Sair")
 
 
@@ -686,6 +783,8 @@ def main():
             mostrarModeloDescida()
         elif opcaoMenu == "7":
             executarDemoCompleta()
+        elif opcaoMenu == "9":
+            reavaliarPendentes()
         elif opcaoMenu == "0":
             print("Encerrando o MGPEB.")
         else:

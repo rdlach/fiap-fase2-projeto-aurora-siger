@@ -3,7 +3,7 @@
 Usa o mesmo texto (relatorio_mgpeb.md) e as mesmas medidas do PDF gerado por
 gerar_pdf_relatorio.py: fontes DejaVu (embutidas no arquivo, para aparecerem
 iguais em qualquer computador), tamanhos, entrelinhas, espacos, cores, larguras
-das tabelas e as mesmas quebras de pagina. Uso:
+das tabelas e paginacao automatica. Uso:
 
     python3 gerar_docx_relatorio.py
 
@@ -11,6 +11,7 @@ Requer python-docx, reportlab (so para medir as larguras) e fonttools.
 """
 
 import io
+import os
 import re
 import uuid
 import zipfile
@@ -32,7 +33,10 @@ from reportlab.pdfbase.ttfonts import TTFont
 PASTA = Path(__file__).parent
 ENTRADA_MD = PASTA / "relatorio_mgpeb.md"
 SAIDA = PASTA / "relatorio_mgpeb.docx"
-PASTA_FONTES = Path("/usr/share/fonts/truetype/dejavu")
+PASTA_FONTES = Path(os.environ.get("MGPEB_FONTES", "/usr/share/fonts/truetype/dejavu"))
+if not (PASTA_FONTES / "DejaVuSans.ttf").exists():
+    import matplotlib
+    PASTA_FONTES = Path(matplotlib.get_data_path()) / "fonts" / "ttf"
 FONTE, MONO = "DejaVu Sans", "DejaVu Sans Mono"
 LARGURA_UTIL = Cm(17)
 LARGURA_PT = 17 / 2.54 * 72
@@ -41,16 +45,10 @@ RODAPE = "Projeto Aurora Siger - Relatório Técnico do MGPEB - Fase 2"
 # O PDF usa 7,8 pt nas tabelas e no codigo; o Word so aceita tamanhos em meio ponto.
 TAM_TABELA = 8
 
-# Quebras de pagina iguais as do PDF: (tipo do bloco, inicio do texto).
+# Quebras opcionais: (tipo do bloco, inicio do texto).
 # "corte" divide um paragrafo antes do trecho indicado.
-QUEBRAS = [
-    ("codigo", "AUTORIZAR = A"),
-    ("secao", "3. Protótipo em Python"),
-    ("codigo", "Analisando M05"),
-    ("paragrafo", "**Efeito dos parâmetros.**"),
-    ("subsecao", "Critérios para a escolha da área de pouso"),
-    ("corte", "tempo constante caso a frota cresça."),
-]
+QUEBRAS = [("secao", "Referências")]  # Mantem o titulo junto da bibliografia.
+
 
 # Fontes do PDF, registradas so para medir as larguras das colunas com a mesma regra.
 pdfmetrics.registerFont(TTFont("Texto", str(PASTA_FONTES / "DejaVuSans.ttf")))
@@ -382,7 +380,8 @@ def converter(doc, texto):
             i += 1
             continue
         if linha.startswith("# "):
-            p = doc.add_paragraph()
+            p = doc.add_paragraph(style="Title")
+            limpar_estilo_titulo(p)
             formato(p, 23, 0, 8)
             escrever(p, linha[2:], 19, "202020", negrito=True)
             i += 1

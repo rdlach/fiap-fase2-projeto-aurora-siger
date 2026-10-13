@@ -28,31 +28,10 @@ As opcoes **3**, **7** e **8** comecam uma simulacao nova e apagam os resultados
 
 - `projeto2-grupo/aurora_siger_pt2.py`: prototipo em Python, com menu e os modos base, randomico e manual.
 - `projeto2-grupo/relatorio/relatorio_mgpeb.pdf`: relatorio tecnico (9 paginas), com o anexo de estruturas de dados.
-- `projeto2-grupo/relatorio/relatorio_mgpeb.docx`: o mesmo relatorio em Word.
+- `projeto2-grupo/relatorio/relatorio_mgpeb.docx`: o mesmo relatorio em Word, caso seja preciso editar (depois e so salvar como PDF).
 - `projeto2-grupo/diagramas/diagrama-logico-mgpeb-v3.svg` e `.png`: folha 1, circuito logico da decisao de pouso (AND, OR, NOT e NOR) com as saidas POUSADO, ESPERA e ALERTA.
 - `projeto2-grupo/diagramas/diagrama-fluxo-mgpeb.svg` e `.png`: folha 2, fluxo da simulacao (cenario, fila, avaliacao, listas, reavaliacao dos pendentes e pilha de alertas).
 - `projeto2-grupo/diagramas/diagramas-mgpeb.drawio`: as duas folhas para editar no draw.io (https://app.diagrams.net).
-
-## Arquivos auxiliares (opcionais)
-
-Esses scripts servem so para gerar de novo o grafico, o PDF e o Word do relatorio. Eles usam bibliotecas externas, mas nao fazem parte do prototipo.
-
-- `projeto2-grupo/relatorio/relatorio_mgpeb.md`: texto do relatorio. As alteracoes de texto sao feitas aqui.
-- `projeto2-grupo/relatorio/gerar_grafico_descida.py`: gera a Figura 2 em `relatorio/figuras/` (usa `matplotlib`).
-- `projeto2-grupo/relatorio/gerar_pdf_relatorio.py`: gera o PDF a partir do `.md` (usa `reportlab`).
-- `projeto2-grupo/relatorio/gerar_docx_relatorio.py`: gera o Word a partir do `.md`, com as mesmas fontes e medidas do PDF; a paginacao pode mudar um pouco de um editor para outro (usa `python-docx`, `fonttools` e `reportlab`).
-
-Para gerar tudo de novo depois de editar o `.md`:
-
-```bash
-pip install matplotlib reportlab python-docx fonttools
-cd projeto2-grupo/relatorio
-python gerar_grafico_descida.py
-python gerar_pdf_relatorio.py
-python gerar_docx_relatorio.py
-```
-
-Os scripts usam as fontes DejaVu. Eles procuram primeiro na pasta indicada em `MGPEB_FONTES`, depois no caminho padrao do Linux e, se nao acharem, usam as fontes que vem com o matplotlib.
 
 ## Regras logicas
 

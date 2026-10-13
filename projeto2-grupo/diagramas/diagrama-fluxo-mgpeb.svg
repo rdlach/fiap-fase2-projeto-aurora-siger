@@ -159,7 +159,7 @@
 <path d="M60,838 L1060,838" fill="none" stroke="#bdb8a8" stroke-width="0.8" stroke-linejoin="miter" stroke-linecap="butt"/>
 <text x="60" y="854" font-family="Menlo, 'Courier New', monospace" font-size="18" font-weight="bold" fill="#6b675d" text-anchor="start" font-style="normal" letter-spacing="0">2</text>
 <text x="96" y="854" font-family="Menlo, 'Courier New', monospace" font-size="16" font-weight="bold" fill="#1d1d1b" text-anchor="start" font-style="normal" letter-spacing="0">mostrarBuscas()</text>
-<text x="96" y="874" font-family="Menlo, 'Courier New', monospace" font-size="13" font-weight="normal" fill="#6b675d" text-anchor="start" font-style="normal" letter-spacing="0">busca linear: menor combustível = M04 (28%), maior prioridade = M01, tipo ENE = M02</text>
+<text x="96" y="874" font-family="Menlo, 'Courier New', monospace" font-size="13" font-weight="normal" fill="#6b675d" text-anchor="start" font-style="normal" letter-spacing="0">busca linear: menor combustível = M04 (28%), maior prioridade = M02, tipo ENE = M02</text>
 <path d="M60,892 L1060,892" fill="none" stroke="#bdb8a8" stroke-width="0.8" stroke-linejoin="miter" stroke-linecap="butt"/>
 <text x="60" y="908" font-family="Menlo, 'Courier New', monospace" font-size="18" font-weight="bold" fill="#6b675d" text-anchor="start" font-style="normal" letter-spacing="0">6</text>
 <text x="96" y="908" font-family="Menlo, 'Courier New', monospace" font-size="16" font-weight="bold" fill="#1d1d1b" text-anchor="start" font-style="normal" letter-spacing="0">mostrarModeloDescida()</text>

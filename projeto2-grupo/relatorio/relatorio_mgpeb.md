@@ -79,10 +79,10 @@ As três buscas usam busca linear, que percorre a lista do início ao fim com co
 | Função | Busca | Resultado |
 | --- | --- | --- |
 | buscarMenorComb | módulo com menor combustível | M04 Carga Atlas (28%) |
-| buscarMaiorPrio | módulo mais urgente (desempate pela criticidade) | M01 Habitat Orion |
+| buscarMaiorPrio | módulo mais urgente (desempate pela criticidade e, depois, pelo menor combustível) | M02 Gerador Helios |
 | buscarPorTipo | todos os módulos de um tipo (ENE) | M02 Gerador Helios |
 
-A busca binária, de complexidade O(log n), não foi usada porque exigiria manter a lista ordenada pelo atributo pesquisado, e o ganho seria irrelevante para cinco elementos.
+A busca de maior prioridade usa a mesma comparação da fila (`vemDepois`); por isso, as duas apontam M02. A busca binária, de complexidade O(log n), não foi usada porque exigiria manter a lista ordenada pelo atributo pesquisado, e o ganho seria irrelevante para cinco elementos.
 
 ### 3.4 Decisão de pouso
 
@@ -133,9 +133,9 @@ Os parâmetros, definidos no início do código, são h0 = 1.200 m (altura inici
 | --- | --- | --- | --- | --- | --- | --- |
 | h(t) (m) | 1.200,00 | 1.125,00 | 900,00 | 547,31 | 525,00 | 0,00 |
 
-**Análise qualitativa.** O gráfico é um ramo de parábola com concavidade para baixo e vértice em t = 0, onde a altura é máxima. A curva começa quase horizontal e fica cada vez mais inclinada, porque a taxa de descida cresce com o tempo: a velocidade é v(t) = 2a·t, ou 7,5 m/s em t = 20 s, cerca de 22 m/s em t = 59 s e 30 m/s em t = 80 s. Resolvendo h(t) = 550, obtemos t = T·√(1 − 550/h0) ≈ 58,9 s, e o programa sugere acionar os retropropulsores em t = 59 s, a 547,31 m.
+**Análise qualitativa.** O gráfico é um ramo de parábola com concavidade para baixo e vértice em t = 0, onde a altura é máxima. A curva começa quase horizontal e fica cada vez mais inclinada, porque a taxa de descida cresce com o tempo: a velocidade vertical é h'(t) = −2a·t, negativa porque a altura diminui; em módulo, |v(t)| = 2a·t vale 7,5 m/s em t = 20 s, cerca de 22 m/s em t = 59 s e 30 m/s em t = 80 s. Resolvendo h(t) = 550, obtemos t = T·√(1 − 550/h0) ≈ 58,9 s, e o programa sugere acionar os retropropulsores em t = 59 s, a 547,31 m.
 
-**Efeito dos parâmetros.** Aumentar T (descida mais longa) reduz a e torna a curva mais suave, adiando o ponto de acionamento; reduzir T faz o contrário. Aumentar h0 mantendo T aumenta a, e o módulo atravessa o limite mais rápido. Elevar o limite de 550 m antecipa o acionamento e aumenta a margem de segurança, ao custo de mais combustível gasto na frenagem.
+**Efeito dos parâmetros.** Aumentar T (descida mais longa) reduz a e torna a curva mais suave, adiando o ponto de acionamento; reduzir T faz o contrário. Aumentar h0 mantendo T aumenta a: o módulo cruza o limite de 550 m mais tarde, porém mais rápido; diminuir h0 antecipa o cruzamento. Elevar o limite de 550 m antecipa o acionamento e aumenta a margem de segurança, ao custo de mais combustível gasto na frenagem.
 
 **Limites do modelo.** A função representa a fase de queda antes da frenagem: nela a velocidade só aumenta, e o módulo chegaria ao solo a 30 m/s se nada fosse feito. Por isso, o valor de interesse não é o instante de contato, mas o instante de decisão: o modelo indica quando os retropropulsores devem entrar para reduzir essa velocidade. O comportamento após o acionamento não é modelado e seria um passo natural em uma próxima versão.
 
@@ -174,7 +174,7 @@ Na dimensão social e de governança, uma colônia isolada concentra poder em po
 
 ### Conclusão
 
-A reflexão mostra que o MGPEB não é apenas uma ferramenta de pouso, mas o primeiro passo de uma governança para a colônia. Ao combinar as três dimensões do ESG, o projeto busca o equilíbrio do *triple bottom line* (pessoas, planeta e resultado): uma base tecnicamente viável, que protege as pessoas, usa os recursos com responsabilidade e torna suas decisões transparentes. Em uma fronteira como Marte, onde não há leis estabelecidas, esses princípios funcionam como um compromisso voluntário, assim como o Pacto Global entre as empresas, e precisam ser assumidos desde o primeiro pouso.
+A reflexão mostra que o MGPEB não é apenas uma ferramenta de pouso, mas o primeiro passo de uma governança para a colônia. Ao combinar as três dimensões do ESG, o projeto busca o equilíbrio do *triple bottom line* (pessoas, planeta e resultado): uma base tecnicamente viável, que protege as pessoas, usa os recursos com responsabilidade e torna suas decisões transparentes. Em uma fronteira como Marte, que exige governança local compatível com os acordos internacionais, esses princípios são um compromisso voluntário, como o Pacto Global entre as empresas, e valem desde o primeiro pouso.
 
 ## 7. Conclusão
 

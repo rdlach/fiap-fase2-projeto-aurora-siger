@@ -402,17 +402,15 @@ def buscarMenorComb(listaMods):
 
 
 def buscarMaiorPrio(listaMods):
-    # Como prioridade 1 e mais urgente que prioridade 4, o menor numero vence.
-    # Em empate, a carga mais critica fica na frente.
+    # Usa a mesma regra da fila (vemDepois), para busca e fila concordarem:
+    # menor numero de prioridade, depois maior criticidade, depois menor combustivel.
     if len(listaMods) == 0:
         return None
 
     maiorPrioMod = listaMods[0]
 
     for mod in listaMods:
-        if mod["prio"] < maiorPrioMod["prio"]:
-            maiorPrioMod = mod
-        elif mod["prio"] == maiorPrioMod["prio"] and mod["crit"] > maiorPrioMod["crit"]:
+        if vemDepois(maiorPrioMod, mod):
             maiorPrioMod = mod
 
     return maiorPrioMod

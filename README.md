@@ -4,37 +4,49 @@ Projeto da Fase 2 da FIAP: relatorio operacional de pouso para a atividade **A A
 
 O prototipo simula um Modulo de Gerenciamento de Pouso e Estabilizacao de Base, organizando modulos de pouso em fila, aplicando regras logicas de autorizacao e classificando o resultado em pousado, espera ou alerta.
 
-## Como executar
+## Como executar o prototipo
+
+O prototipo usa apenas recursos basicos do Python e o modulo `random`, que ja vem com a linguagem. Nao e preciso instalar nada.
+
+Na pasta raiz do repositorio, use o comando que funcionar na sua instalacao:
 
 ```bash
-python3 projeto2-grupo/aurora_siger_pt2.py
+python projeto2-grupo/aurora_siger_pt2.py     # Windows, macOS ou Linux
+py projeto2-grupo/aurora_siger_pt2.py         # Windows, pelo inicializador do Python
+python3 projeto2-grupo/aurora_siger_pt2.py    # macOS ou Linux
 ```
 
-## Conteudo principal
+No menu, a opcao **7** roda a demonstracao completa no modo base: cenario, regras, buscas, fila, resultado e modelo de descida. Resultado esperado: M02 e M01 em POUSADO, M03 em ESPERA, M05 e M04 em ALERTA.
+
+## Arquivos da entrega
 
 - `projeto2-grupo/aurora_siger_pt2.py`: prototipo em Python com menu, modo base, modo randomico e modo manual.
-- `projeto2-grupo/diagramas/diagrama-logico-mgpeb-v3.svg` e `.png`: folha 1, circuito logico da decisao de pouso (portas AND, OR, NOT e NOR). O PNG esta em 2x, para uso no relatorio.
+- `projeto2-grupo/relatorio/relatorio_mgpeb.pdf`: relatorio tecnico final (7 paginas), com o anexo de estruturas de dados.
+- `projeto2-grupo/relatorio/relatorio_mgpeb.docx`: o mesmo relatorio em Word, para editar.
+- `projeto2-grupo/diagramas/diagrama-logico-mgpeb-v3.svg` e `.png`: folha 1, circuito logico oficial da decisao de pouso (portas AND, OR, NOT e NOR), com as tres saidas POUSADO, ESPERA e ALERTA.
 - `projeto2-grupo/diagramas/diagrama-fluxo-mgpeb.svg` e `.png`: folha 2, fluxo da simulacao (cenario, fila FIFO, avaliacao, listas e pilha de alertas).
 - `projeto2-grupo/diagramas/diagramas-mgpeb.drawio`: as duas folhas em formato editavel do draw.io (uma pagina por folha). Abra em https://app.diagrams.net
 
-- `projeto2-grupo/relatorio/relatorio_mgpeb.pdf`: relatorio tecnico final (7 paginas).
-- `projeto2-grupo/relatorio/relatorio_mgpeb.docx`: o mesmo relatorio em Word, para editar, com as mesmas fontes (embutidas no arquivo), medidas e quebras de pagina do PDF (gerado por `gerar_docx_relatorio.py`, que usa `python-docx` e `fonttools`).
-- `projeto2-grupo/relatorio/relatorio_mgpeb.md`: texto do relatorio; edite aqui e gere o PDF de novo.
-- `projeto2-grupo/relatorio/gerar_pdf_relatorio.py`: gera o PDF a partir do `.md` (usa `reportlab`).
+## Arquivos auxiliares (opcionais)
+
+Estes scripts so servem para gerar novamente o grafico, o PDF e o Word do relatorio. Eles usam bibliotecas externas, mas **nao fazem parte do prototipo**, que continua sem dependencias.
+
+- `projeto2-grupo/relatorio/relatorio_mgpeb.md`: texto-fonte do relatorio. As correcoes de texto sao feitas aqui.
 - `projeto2-grupo/relatorio/gerar_grafico_descida.py`: gera a Figura 2 em `relatorio/figuras/` (usa `matplotlib`).
+- `projeto2-grupo/relatorio/gerar_pdf_relatorio.py`: gera o PDF a partir do `.md` (usa `reportlab`).
+- `projeto2-grupo/relatorio/gerar_docx_relatorio.py`: gera o Word a partir do `.md`, com as mesmas fontes (embutidas no arquivo), medidas e quebras de pagina do PDF (usa `python-docx`, `fonttools` e `reportlab`).
 
-A versao anterior (`diagrama-logico-mgpeb-v2.svg`) fica so como historico.
-
-## Como gerar o relatorio
-
-O prototipo nao usa bibliotecas externas. Apenas os scripts do relatorio precisam de `reportlab` e `matplotlib`:
+Para gerar tudo de novo, depois de editar o `.md`:
 
 ```bash
-pip install reportlab matplotlib
+pip install matplotlib reportlab python-docx fonttools
 cd projeto2-grupo/relatorio
-python3 gerar_grafico_descida.py
-python3 gerar_pdf_relatorio.py
+python gerar_grafico_descida.py
+python gerar_pdf_relatorio.py
+python gerar_docx_relatorio.py
 ```
+
+Os scripts do PDF e do Word usam as fontes DejaVu. No Linux elas costumam vir instaladas; em outros sistemas, instale-as ou ajuste o caminho `PASTA_FONTES` no inicio de cada script.
 
 ## Regras logicas
 
@@ -52,3 +64,7 @@ Onde:
 - `D = sensCheck`
 - `E = massaCheck`
 - `K = combustivel abaixo de 30%` (condicao critica, usada so na regra de alerta)
+
+## Ordem de prioridade
+
+A fila de pouso (`ordenarFilaPorPrio`) e a busca de maior prioridade (`buscarMaiorPrio`) usam a mesma regra, definida em `vemDepois`: menor numero de prioridade, depois maior criticidade e, por ultimo, menor combustivel. No modo base, as duas apontam M02 na frente de M01.

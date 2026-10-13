@@ -8,9 +8,9 @@ Repositório: https://github.com/rdlach/fiap-fase2-projeto-aurora-siger
 
 ## 1. Introdução e cenário de pouso
 
-Na Fase 1, a Aurora Siger precisava decidir se estava pronta para decolar. Nesta fase, a nave já está na órbita de Marte e libera módulos automatizados que descem sozinhos até a superfície para formar a base inicial da colônia. Como o atraso de comunicação com a Terra impede o controle humano em tempo real, desenvolvemos o MGPEB (Módulo de Gerenciamento de Pouso e Estabilização de Base): um protótipo em Python que organiza os módulos em fila, aplica regras lógicas de autorização e classifica cada módulo como POUSADO, ESPERA ou ALERTA.
+Na Fase 1, o desafio era decidir se a Aurora Siger podia decolar. Agora a nave já chegou à órbita de Marte e precisa soltar os módulos que vão formar a base da colônia. Como a comunicação com a Terra tem atraso, ninguém consegue controlar esses pousos em tempo real. Por isso criamos o MGPEB (Módulo de Gerenciamento de Pouso e Estabilização de Base), um protótipo em Python que coloca os módulos em fila, aplica as regras de autorização e classifica cada um como POUSADO, ESPERA ou ALERTA.
 
-Definimos cinco módulos, cada um com os atributos pedidos no enunciado: prioridade de pouso (1 é a mais urgente), nível de combustível, massa, criticidade da carga (5 é a mais crítica) e horário estimado de chegada à órbita. A tabela mostra os valores do modo base, o cenário fixo usado na demonstração.
+Usamos cinco módulos, cada um com os atributos pedidos no enunciado: prioridade de pouso (1 é a mais urgente), combustível, massa, criticidade da carga (5 é a mais crítica) e horário de chegada à órbita. A tabela abaixo traz os valores do modo base, que é o cenário fixo da demonstração.
 
 | Módulo | Carga | Prioridade | Combustível | Massa | Criticidade | Órbita | Sensores |
 | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -20,11 +20,11 @@ Definimos cinco módulos, cada um com os atributos pedidos no enunciado: priorid
 | M04 Carga Atlas | Logística | 4 | 28% | 10.800 kg | 2 | 08:32 | Funcionais |
 | M05 Suporte Vita | Médica | 2 | 47% | 6.900 kg | 4 | 08:40 | Falha parcial |
 
-Além dos módulos, o cenário simula as condições de Marte no momento do pouso. No modo base, a atmosfera está estável, o vento é de 12 m/s, a visibilidade é de 8 km, não há tempestade de poeira e a área de pouso está livre. O programa oferece três modos de dados: base (valores fixos, para demonstração), randômico (valores sorteados, para testar as regras em situações variadas) e manual (valores digitados, para forçar um cenário específico).
+O cenário também inclui as condições de Marte na hora do pouso. No modo base, a atmosfera está estável, o vento está em 12 m/s, a visibilidade é de 8 km, não há tempestade de poeira e a área de pouso está livre. Além do modo base, o programa tem o modo randômico, que sorteia os valores para testar as regras em situações diferentes, e o modo manual, em que o usuário digita os dados.
 
 ## 2. Regras de decisão e portas lógicas
 
-Cada módulo é avaliado por cinco verificações booleanas, calculadas na função `calcularChecks`, e por uma condição crítica usada apenas na regra de alerta.
+Cada módulo passa por cinco verificações booleanas, calculadas na função `calcularChecks`. Há ainda uma condição crítica, K, que só entra na regra de alerta.
 
 | Variável | Nome no código | Verdadeira quando |
 | --- | --- | --- |
@@ -35,7 +35,7 @@ Cada módulo é avaliado por cinco verificações booleanas, calculadas na funç
 | E | massaCheck | massa ≤ 12.000 kg |
 | K | (falha crítica) | combustível < 30% |
 
-A partir dessas variáveis, modelamos três funções booleanas:
+Com essas variáveis, montamos três funções booleanas:
 
 ```
 AUTORIZAR = A · B · C · D · E
@@ -43,9 +43,9 @@ ALERTA    = (A' · K) + D'   =   K + D'
 ESPERA    = (AUTORIZAR + ALERTA)'
 ```
 
-A autorização usa uma porta AND de cinco entradas: basta uma condição falsa para o pouso não ser liberado. A verificação atmosférica B é, ela própria, uma porta AND de quatro condições ambientais. A regra de alerta foi simplificada: como K (combustível abaixo de 30%) já implica A' (combustível abaixo de 35%), o termo A' não altera o resultado, e ALERTA reduz-se a K + D', ou seja, combustível crítico OU sensores com falha. A espera é a saída de uma porta NOR: o módulo aguarda quando não foi autorizado nem está em alerta.
+A autorização é uma porta AND de cinco entradas, então basta uma condição falsa para o pouso não ser liberado. A própria verificação atmosférica B também é um AND, das quatro condições do ambiente. Na regra de alerta, percebemos que o termo A' era desnecessário: se o combustível está abaixo de 30% (K), ele também está abaixo de 35% (A'). Com isso, ALERTA ficou K + D', ou seja, combustível crítico ou sensores com falha. A espera sai de uma porta NOR, que vale 1 quando o módulo não foi autorizado e também não está em alerta.
 
-As três saídas são mutuamente exclusivas. Se AUTORIZAR = 1, então A = 1 e D = 1; logo K = 0 e D' = 0, o que torna ALERTA = 0. Pela definição de ESPERA, ela só vale 1 quando as outras duas valem 0. Assim, cada módulo recebe exatamente uma classificação. A Figura 1 mostra o circuito completo e os casos do modo base.
+As três saídas nunca acontecem juntas. Se AUTORIZAR = 1, então A = 1 e D = 1, o que faz K = 0 e D' = 0, e portanto ALERTA = 0. E ESPERA só vale 1 quando as outras duas valem 0. Assim, cada módulo recebe uma única classificação. O circuito completo, com os casos do modo base, está na Figura 1.
 
 ![Figura 1 – Circuito lógico da decisão de pouso (portas AND, OR, NOT e NOR) com os casos do modo base](../diagramas/diagrama-logico-mgpeb-v3.png)
 
@@ -56,25 +56,25 @@ As três saídas são mutuamente exclusivas. Se AUTORIZAR = 1, então A = 1 e D 
 | M04 (modo base) | 0 | 1 | 1 | 1 | 1 | 1 | ALERTA |
 | M03 (modo base) | 0 | 1 | 1 | 1 | 1 | 0 | ESPERA |
 
-O modo base cobre as três saídas. M03 e M04 mostram a diferença entre ESPERA e ALERTA: os dois falham em A, mas M03, com 33% de combustível, está abaixo do mínimo de 35% e acima do nível crítico de 30% (K = 0), por isso aguarda; M04, com 28%, está abaixo do nível crítico (K = 1) e vai para revisão.
+O modo base passa pelas três saídas. M03 e M04 ajudam a ver a diferença entre ESPERA e ALERTA. Os dois falham em A, mas o M03 tem 33% de combustível, abaixo do mínimo de 35% e acima do nível crítico de 30% (K = 0), então fica esperando. O M04 tem 28%, abaixo do nível crítico (K = 1), e vai para revisão.
 
 ## 3. Protótipo em Python
 
-O protótipo está no arquivo `aurora_siger_pt2.py`, na pasta `projeto2-grupo`, e é executado pelo terminal com o comando `python3 projeto2-grupo/aurora_siger_pt2.py`. Ele usa apenas recursos básicos da linguagem e o módulo `random`, para o modo randômico, sem bibliotecas avançadas. Um menu controlado por um laço while permanece ativo até a opção 0 e oferece: regras lógicas (1), buscas (2), reinício e carga da fila ordenada (3), processamento da fila (4), resumo final (5), modelo matemático (6), reinício com demonstração completa (7), escolha do modo de dados com reinício (8) e reavaliação dos pendentes (9).
+O código está em `aurora_siger_pt2.py`, na pasta `projeto2-grupo`. Para rodar, a partir da pasta raiz do repositório, usamos `python projeto2-grupo/aurora_siger_pt2.py` (no Windows também funciona `py`; no macOS e no Linux, `python3`). O programa só usa recursos básicos do Python e o módulo `random`, para o modo randômico. O menu fica em um laço while até a opção 0 e tem as opções: regras lógicas (1), buscas (2), reiniciar e carregar a fila ordenada (3), processar a fila (4), resumo final (5), modelo matemático (6), reiniciar e rodar a demonstração completa (7), escolher o modo de dados e reiniciar (8) e reavaliar os pendentes (9).
 
 ### 3.1 Cadastro e estruturas lineares
 
-Cada módulo é um dicionário com seus atributos. Ao carregar a simulação, os cinco módulos são copiados para a fila principal filaPouso, que funciona como fila FIFO. Durante o processamento, cada módulo é direcionado a uma de três listas auxiliares (modsPousados, modsEspera ou modsAlerta), e os alertas também são registrados em uma pilha LIFO (pilhaAlertas). O Anexo A detalha o uso de cada estrutura.
+Cada módulo é um dicionário com seus atributos. Quando a simulação começa, os cinco módulos são copiados para a fila principal, filaPouso, que funciona como FIFO. Depois de avaliado, cada módulo vai para uma de três listas (modsPousados, modsEspera ou modsAlerta), e os alertas também são guardados em uma pilha LIFO, a pilhaAlertas. O uso de cada estrutura está detalhado no Anexo A.
 
 ### 3.2 Ordenação da fila
 
-A fila é reorganizada pela função `ordenarFilaPorPrio`, que implementa o algoritmo de ordenação por inserção (insertion sort). O critério, definido na função `vemDepois`, compara em três níveis: menor número de prioridade primeiro; em empate, maior criticidade primeiro; em novo empate, menor combustível primeiro. O último critério atende diretamente à ideia de priorizar módulos com pouca reserva de combustível. No modo base, M01 e M02 empatam em prioridade e criticidade, e M02 desce antes por ter menos combustível (54% contra 62%). A fila ordenada fica M02, M01, M05, M03, M04.
+A fila é ordenada pela função `ordenarFilaPorPrio`, que usa insertion sort (ordenação por inserção). A comparação fica na função `vemDepois` e segue três critérios: primeiro o menor número de prioridade; se empatar, a maior criticidade; se ainda empatar, o menor combustível. Esse último critério vem da ideia de pousar antes quem tem menos reserva. No modo base, M01 e M02 empatam em prioridade e criticidade, e o M02 desce antes por ter menos combustível (54% contra 62%). A fila fica M02, M01, M05, M03, M04.
 
-Escolhemos o insertion sort por ser simples, ordenar deslocando elementos dentro do próprio vetor e ter bom desempenho em listas pequenas ou quase ordenadas. No protótipo, a função trabalha sobre uma cópia da fila, para preservar o cadastro original. Sua complexidade de pior caso é O(n²), o que não é um problema para cinco módulos; em uma frota muito maior, um algoritmo O(n log n), como merge sort ou heap sort, seria mais adequado.
+Escolhemos o insertion sort porque ele é simples, ordena deslocando os elementos dentro da própria lista e funciona bem com listas pequenas ou quase ordenadas. A função trabalha em uma cópia da fila, para não mexer no cadastro original. No pior caso ele é O(n²), o que não pesa com cinco módulos. Com uma frota muito maior, valeria trocar por um algoritmo O(n log n), como merge sort ou heap sort.
 
 ### 3.3 Buscas
 
-As três buscas usam busca linear, que percorre a lista do início ao fim com complexidade O(n) e não exige que os dados estejam ordenados. No modo base, os resultados são:
+As três buscas são lineares: percorrem a lista do começo ao fim, com complexidade O(n), e não precisam que os dados estejam ordenados. No modo base, os resultados são:
 
 | Função | Busca | Resultado |
 | --- | --- | --- |
@@ -82,11 +82,11 @@ As três buscas usam busca linear, que percorre a lista do início ao fim com co
 | buscarMaiorPrio | módulo mais urgente (desempate pela criticidade e, depois, pelo menor combustível) | M02 Gerador Helios |
 | buscarPorTipo | todos os módulos de um tipo (ENE) | M02 Gerador Helios |
 
-A busca de maior prioridade usa a mesma comparação da fila (`vemDepois`); por isso, as duas apontam M02. A busca binária, de complexidade O(log n), não foi usada porque exigiria manter a lista ordenada pelo atributo pesquisado, e o ganho seria irrelevante para cinco elementos.
+A busca de maior prioridade usa a mesma comparação da fila (`vemDepois`), por isso as duas apontam o M02. Não usamos busca binária, que é O(log n), porque ela exigiria manter a lista ordenada pelo atributo buscado, e com cinco módulos não faria diferença.
 
 ### 3.4 Decisão de pouso
 
-A função `avaliarPouso` traduz as funções booleanas da Seção 2 em uma estrutura condicional if, elif e else, na mesma ordem lógica do circuito:
+A função `avaliarPouso` transforma as funções booleanas da Seção 2 em um if, elif e else, na mesma ordem do circuito:
 
 ```
 if autPouso:
@@ -97,7 +97,7 @@ else:
     return "ESPERA", ...
 ```
 
-A rotina `processarFila` retira um módulo por vez da frente da fila, aplica a decisão e o envia para a lista correspondente, até a fila esvaziar. Trecho da execução da demonstração completa (opção 7) no modo base:
+A função `processarFila` tira um módulo por vez da frente da fila, aplica a decisão e manda o módulo para a lista certa, até a fila esvaziar. Este é um trecho da demonstração completa (opção 7) no modo base:
 
 ```
 Analisando M05 - Suporte Vita
@@ -116,48 +116,48 @@ Decisao: ALERTA OPERACIONAL
 Motivo: Combustivel critico: 28%, abaixo de 30%.
 ```
 
-Resultado final do modo base: M02 e M01 pousados; M03 em espera (combustível abaixo do mínimo, mas não crítico); M05 (sensores) e M04 (combustível crítico) em alerta.
+No fim do modo base, M02 e M01 pousam, M03 fica em espera (combustível abaixo do mínimo, mas não crítico) e M05 (sensores) e M04 (combustível crítico) ficam em alerta.
 
-### 3.5 Continuidade da operação e histórico
+### 3.5 Reavaliação e histórico
 
-A opção 9 permite atualizar o ambiente e os dados das cópias operacionais pendentes. Os módulos em espera retornam à fila; os módulos em alerta só retornam após confirmação explícita de revisão. A revisão não autoriza o pouso por si só: todas as condições são avaliadas novamente. A função `ordenarFilaAtual` ordena sem recarregar o cadastro; `devolverPendente` verifica o ID para evitar duplicação na fila. Os módulos já pousados permanecem na lista de pousados.
+A opção 9 serve para continuar a operação depois do primeiro processamento. Nela dá para atualizar o ambiente e ajustar os dados dos módulos pendentes. Os módulos em espera voltam para a fila, e os em alerta só voltam se alguém confirmar que a revisão foi feita. Mesmo assim, o pouso não é liberado direto: o módulo passa por todas as verificações de novo. A função `ordenarFilaAtual` reordena a fila sem recarregar o cadastro, e `devolverPendente` confere o ID para o mesmo módulo não entrar duas vezes na fila. Quem já pousou continua na lista de pousados.
 
-Os motivos de alerta agora identificam combustível crítico com o valor e o limite de 30%, falha nos sensores ou ambas as causas. A mesma mensagem aparece no terminal e no registro da pilha. `modsAlerta` contém os módulos atualmente retidos; `pilhaAlertas` contém o histórico de alertas da operação, inclusive os de módulos posteriormente recuperados. Uma nova avaliação que falha gera outro evento legítimo. Autorizações, esperas e ajustes manuais não são registrados nessa pilha; `horaOrb` é a chegada à órbita, não a hora do evento.
+A mensagem de alerta agora mostra a causa: combustível crítico (com o valor e o limite de 30%), falha nos sensores ou as duas coisas. A mesma mensagem aparece na tela e na pilha. A lista modsAlerta tem os módulos que ainda estão retidos, e a pilhaAlertas guarda o histórico, inclusive de módulos que depois foram liberados. Se um módulo falhar de novo, entra outro registro na pilha. Autorizações, esperas e ajustes manuais não vão para a pilha, e o horário guardado é o de chegada à órbita, e não o do alerta.
 
-As opções 3 e 7 limpam fila, resultados e histórico e recarregam o cadastro do cenário selecionado; a opção 8 escolhe outro cenário e também reinicia. Para restaurar especificamente os valores base, usar 8 e depois 1. Encerrar o programa perde os dados em memória. As buscas da opção 2 consultam `todosMods`, o cadastro inicial do cenário; o resumo da opção 5 consulta os estados operacionais. Portanto, um ajuste feito na opção 9 não altera os valores exibidos pelas buscas.
+As opções 3 e 7 limpam a fila, os resultados e o histórico e recarregam o cadastro do cenário escolhido. A opção 8 troca de cenário e também reinicia; para voltar aos valores base, é só usar 8 e depois 1. Os dados ficam só na memória e se perdem quando o programa fecha. As buscas da opção 2 olham o cadastro inicial (`todosMods`), e o resumo da opção 5 mostra a situação atual da operação. Por isso, um ajuste feito na opção 9 não aparece nas buscas.
 
-### 3.6 Verificação executada
+### 3.6 Testes realizados
 
-A validação local em Python 3.14.7 verificou 2.160 combinações: combustível 29, 30, 34, 35 e 36%; duas condições atmosféricas, duas de área e duas de sensores; massas 11.999, 12.000 e 12.001 kg; ventos 17, 18 e 19 m/s; visibilidades 3, 4 e 5 km; com e sem poeira. Todas produziram a classificação esperada. Outros 100 cenários aleatórios verificaram classificação, ordenação e concordância com a busca de maior prioridade. São verificações locais, não certificação de voo nem uma suíte permanente de testes no protótipo.
+Testamos as regras em Python 3.14 com 2.160 combinações: combustível de 29, 30, 34, 35 e 36%; atmosfera, área e sensores nas duas situações; massas de 11.999, 12.000 e 12.001 kg; vento de 17, 18 e 19 m/s; visibilidade de 3, 4 e 5 km; com e sem poeira. Todas deram a classificação esperada. Também rodamos 100 cenários aleatórios para conferir a classificação, a ordenação e se a busca de maior prioridade bate com a fila. Foram testes feitos por nós, para o protótipo, e não ficaram como testes automáticos no projeto.
 
-| Caso executado | Resultado observado |
+| Caso testado | Resultado |
 | --- | --- |
 | Modo base, opção 7 | Pousados M02 e M01; espera M03; alertas M05 e M04 |
-| Opção 9 sem alterar dados nem liberar alertas | M03 permanece em espera; pousados e histórico preservados |
-| M03 ajustado manualmente para 40%, demais condições base | M03 pousa; M02 e M01 continuam pousados |
-| Alerta revisado, mas sensores ainda com falha | Novo alerta; nenhuma autorização indevida |
-| Área ocupada e depois liberada | Espera e posterior pouso somente dos módulos seguros |
-| Combustível 28% e sensores com falha juntos | Motivo contém as duas causas, também na pilha |
-| Busca de tipo ausente e coleções vazias | Lista vazia ou None, sem erro |
+| Opção 9 sem alterar dados nem liberar alertas | M03 continua em espera; pousados e histórico mantidos |
+| M03 ajustado para 40%, resto no modo base | M03 pousa; M02 e M01 continuam pousados |
+| Alerta revisado, mas sensores ainda com falha | Novo alerta, sem autorização indevida |
+| Área ocupada e depois liberada | Espera e, depois, pouso só dos módulos seguros |
+| Combustível 28% e sensores com falha juntos | Motivo mostra as duas causas, também na pilha |
+| Busca de tipo que não existe e listas vazias | Lista vazia ou None, sem erro |
 | Descida em 0, 59 e 80 segundos | 1.200 m, 547,31 m e 0 m; sugestão em 59 s |
 
-Também foram exercitados os modos base, manual e randômico, entradas numéricas inválidas, confirmação S/N na opção 9, repetição de processamento e cenário com todos pousados. Nas verificações de continuidade, cada ID permaneceu em exatamente uma estrutura operacional, sem duplicação entre fila, pousados, espera e alerta.
+Também passamos pelos modos base, manual e randômico, por entradas numéricas inválidas, pela confirmação S/N da opção 9, por tentativas de processar a fila duas vezes e por um cenário em que todos pousam. Nos testes da reavaliação, nenhum módulo apareceu repetido entre fila, pousados, espera e alerta.
 
 ### 3.7 Hipóteses e limitações
 
-Todos os cinco módulos são considerados disponíveis em órbita; os horários são informativos. A execução não avança um relógio nem desconta combustível durante a espera. O ambiente permanece constante durante cada processamento e pode ser atualizado na opção 9. A área não possui ciclo de ocupação e liberação: uma área livre é considerada disponível para cada avaliação sequencial. Após a autorização, o pouso é assumido bem-sucedido e o status passa diretamente a POUSADO.
+Consideramos que os cinco módulos já estão em órbita e disponíveis; os horários servem só como informação. A simulação não tem um relógio andando e não gasta combustível enquanto o módulo espera. O ambiente fica igual durante cada processamento e só muda se for atualizado na opção 9. A área também não fica ocupada depois de um pouso: se está livre, vale para todos os módulos daquela rodada. E, quando o pouso é autorizado, consideramos que deu certo e o status já vira POUSADO.
 
-A alteração manual de combustível representa a troca de uma entrada do cenário, não reabastecimento automático. M03, com 33%, não resolve sua insuficiência apenas esperando. O cadastro é fixo em cinco módulos e a busca por tipo do menu usa ENE. No modo manual da opção 8, digitar apenas ESTAVEL/LIVRE e S/N conforme solicitado: textos desconhecidos são convertidos em condições desfavoráveis, sem nova pergunta. A opção 9 valida S/N; a validação textual do modo antigo ainda é uma melhoria pendente.
+Mudar o combustível na opção 9 é trocar um dado do cenário, e não reabastecer o módulo. O M03, com 33%, não sai da espera só esperando. O cadastro tem sempre cinco módulos, e a busca por tipo do menu procura ENE. No modo manual (opção 8), é preciso digitar ESTAVEL, LIVRE e S/N como o programa pede, porque qualquer outro texto vira condição desfavorável, sem perguntar de novo. A opção 9 já repete a pergunta quando a resposta não é S ou N; levar isso para o modo manual ficou como melhoria.
 
 ## 4. Modelagem matemática da descida
 
-Para apoiar a decisão sobre o acionamento dos retropropulsores, modelamos a altura de um módulo durante a aproximação por uma função quadrática:
+Para ajudar a decidir quando acionar os retropropulsores, representamos a altura do módulo durante a aproximação com uma função quadrática:
 
 ```
 h(t) = h0 − a · t²     com  a = h0 / T²
 ```
 
-Os parâmetros, definidos no início do código, são h0 = 1.200 m (altura inicial da aproximação), T = 80 s (tempo até a altura chegar a zero) e, portanto, a = 1.200 / 80² = 0,1875 m/s². A variável t é o tempo em segundos e h(t), a altura em metros; o domínio de análise é 0 ≤ t ≤ 80 s. Tempos negativos não são entradas previstas na demonstração. A função `mostrarModeloDescida` imprime h(t) a cada 20 s e procura o primeiro instante em que a altura fica abaixo do limite de 550 m (`altRetroM`).
+Os parâmetros ficam no início do código: h0 = 1.200 m (altura inicial da aproximação) e T = 80 s (tempo até a altura chegar a zero), o que dá a = 1.200 / 80² = 0,1875 m/s². O tempo t está em segundos e h(t) em metros, e analisamos o intervalo de 0 a 80 s. A função `mostrarModeloDescida` mostra h(t) a cada 20 s e procura o primeiro segundo em que a altura fica abaixo de 550 m (`altRetroM`).
 
 ![Figura 2 – Altura do módulo em função do tempo, com o limite de acionamento dos retropropulsores](figuras/grafico_descida.png)
 
@@ -165,88 +165,72 @@ Os parâmetros, definidos no início do código, são h0 = 1.200 m (altura inici
 | --- | --- | --- | --- | --- | --- | --- |
 | h(t) (m) | 1.200,00 | 1.125,00 | 900,00 | 547,31 | 525,00 | 0,00 |
 
-**Análise qualitativa.** O gráfico é um ramo de parábola com concavidade para baixo e vértice em t = 0, onde a altura é máxima. A curva começa quase horizontal e fica cada vez mais inclinada, porque a taxa de descida cresce com o tempo: a velocidade vertical é h'(t) = −2a·t, negativa porque a altura diminui; em módulo, |v(t)| = 2a·t vale 7,5 m/s em t = 20 s, cerca de 22 m/s em t = 59 s e 30 m/s em t = 80 s. Resolvendo h(t) = 550, obtemos t = T·√(1 − 550/h0) ≈ 58,9 s, e o programa sugere acionar os retropropulsores em t = 59 s, a 547,31 m.
+**Análise qualitativa.** O gráfico é um pedaço de parábola com concavidade para baixo e vértice em t = 0, onde a altura é máxima. No começo a curva é quase horizontal e vai ficando mais inclinada, porque o módulo desce cada vez mais rápido. A velocidade vertical é h'(t) = −2a·t, negativa porque a altura está diminuindo. Em módulo, |v(t)| = 2a·t, o que dá 7,5 m/s em t = 20 s, cerca de 22 m/s em t = 59 s e 30 m/s em t = 80 s. Resolvendo h(t) = 550, chegamos a t = T·√(1 − 550/h0) ≈ 58,9 s, e o programa sugere acionar os retropropulsores em t = 59 s, a 547,31 m.
 
-**Efeito dos parâmetros.** Aumentar T (descida mais longa) reduz a e torna a curva mais suave, adiando o ponto de acionamento; reduzir T faz o contrário. Aumentar h0 mantendo T aumenta a: o módulo cruza o limite de 550 m mais tarde, porém mais rápido; diminuir h0 antecipa o cruzamento. Elevar o limite de 550 m antecipa o acionamento e aumenta a margem de segurança, ao custo de mais combustível gasto na frenagem.
+**Efeito dos parâmetros.** Se T aumenta (descida mais longa), a diminui, a curva fica mais suave e o acionamento acontece mais tarde; se T diminui, acontece o contrário. Se h0 aumenta e T continua igual, a aumenta: o módulo cruza os 550 m mais tarde, porém mais rápido; com h0 menor, o cruzamento vem antes. Subir o limite de 550 m adianta o acionamento e dá mais margem de segurança, mas gasta mais combustível na frenagem.
 
-**Limites do modelo.** A função representa a fase de queda antes da frenagem: nela a velocidade só aumenta, e o módulo chegaria ao solo a 30 m/s se nada fosse feito. Por isso, o valor de interesse não é o instante de contato, mas o instante de decisão: o modelo indica quando os retropropulsores devem entrar para reduzir essa velocidade. O comportamento após o acionamento não é modelado. A sugestão é exibida pela opção 6 e pela demonstração; não aciona equipamentos nem condiciona a classificação em processarFila. Integrar a descida e a frenagem ao processamento seria uma evolução futura.
+**Limites do modelo.** A função representa só a queda antes da frenagem. Nessa fase a velocidade só aumenta, e o módulo chegaria ao chão a 30 m/s se nada fosse feito. Por isso o que interessa no modelo não é o momento do contato com o solo, e sim o momento da decisão: ele indica quando os retropropulsores precisam entrar. O que acontece depois do acionamento não foi modelado. A sugestão aparece na opção 6 e na demonstração, mas não aciona nenhum equipamento nem interfere na classificação feita em processarFila. Juntar a descida e a frenagem ao processamento fica como próximo passo.
 
 ## 5. Contexto histórico e arquitetura
 
-O MGPEB depende de uma ideia que atravessa toda a história da computação: chaves que ligam e desligam, organizadas logicamente para resolver problemas lógicos e aritméticos. As portas AND, OR, NOT e NOR da Figura 1 são exatamente esse tipo de arranjo. O que mudou ao longo das gerações foi a tecnologia da chave: engrenagens nas calculadoras mecânicas, relés nos primeiros computadores eletromecânicos, válvulas na primeira geração, transistores na segunda e circuitos integrados a partir da terceira, com graus crescentes de integração (LSI, VLSI e ULSI).
+Por trás do MGPEB está uma ideia antiga da computação: chaves que ligam e desligam, combinadas para resolver problemas de lógica e de aritmética. As portas AND, OR, NOT e NOR da Figura 1 são isso. O que foi mudando com o tempo foi o tipo de chave: engrenagens nas calculadoras mecânicas, relés nos primeiros computadores eletromecânicos, válvulas na primeira geração, transistores na segunda e circuitos integrados a partir da terceira, cada vez mais integrados (LSI, VLSI e ULSI).
 
-A máquina analítica de Charles Babbage, descrita em 1837, já reunia três fundamentos que reconhecemos no protótipo: entrada de dados (hoje, os modos base, randômico e manual), uma memória para guardar e reutilizar valores (as listas e a pilha) e a execução sequencial de operações (o menu e o processamento da fila). Os primeiros circuitos de relés, como os usados nos computadores de Konrad Zuse, já mostravam que uma soma binária pode ser feita com as mesmas portas que usamos: o bit de soma é um XOR e o "vai um" é um AND. Os computadores de propósito geral da primeira geração, como o ENIAC, com cerca de 30 toneladas e 17.840 válvulas, ocupavam salas inteiras; a miniaturização dos componentes permite embarcar computadores em equipamentos pequenos. A Lei de Moore descreve a tendência de aumento periódico do número de transistores por circuito, não uma garantia de confiabilidade. As referências do Computer History Museum e da Intel fundamentam essa contextualização.
+A máquina analítica de Charles Babbage, de 1837, já tinha três ideias que aparecem no nosso protótipo: entrada de dados (aqui, os modos base, randômico e manual), memória para guardar valores (as listas e a pilha) e execução de operações em sequência (o menu e o processamento da fila). Nos computadores de relés de Konrad Zuse, a soma binária já era feita com as mesmas portas que usamos: o bit da soma é um XOR e o "vai um" é um AND. Os primeiros computadores de uso geral, como o ENIAC, com cerca de 30 toneladas e 17.840 válvulas, ocupavam salas inteiras. Com a miniaturização dos componentes, hoje é possível colocar um computador dentro de equipamentos pequenos. A Lei de Moore descreve essa tendência de o número de transistores por circuito aumentar com o tempo, mas não diz nada sobre confiabilidade.
 
-Um sistema embarcado em Marte, porém, trabalha com limitações que um computador pessoal não tem: memória e capacidade de processamento restritas, energia disputada com o suporte à vida, exposição à radiação e a impossibilidade de manutenção imediata. Essas limitações orientaram as escolhas do protótipo:
+Um sistema embarcado em Marte tem limitações que um computador comum não tem: pouca memória e processamento, energia dividida com o suporte à vida, radiação e nenhuma chance de manutenção rápida. Isso pesou nas escolhas do protótipo:
 
 - estruturas lineares simples (listas, fila e pilha), sem bibliotecas externas;
-- algoritmos simples e de custo previsível (busca linear e insertion sort), adequados ao tamanho pequeno da frota;
-- regras booleanas explícitas e determinísticas, fáceis de verificar e de testar, o que é essencial quando um erro não pode ser corrigido a distância;
-- registro dos alertas em pilha, para que a revisão comece pelo problema mais recente.
+- algoritmos simples e de custo previsível (busca linear e insertion sort), que bastam para uma frota pequena;
+- regras booleanas explícitas, fáceis de conferir e testar, o que importa muito quando não dá para corrigir um erro a distância;
+- registro dos alertas em pilha, para a revisão começar pelo problema mais recente.
 
-A referência da NASA sobre computação tolerante à radiação contextualiza a necessidade de proteger sistemas embarcados. O protótipo acadêmico não implementa tolerância à radiação, redundância ou certificação de controle de voo.
-
-Em contrapartida, o protótipo faz cópias dos módulos para preservar o cadastro original, o que consome memória extra; em um sistema embarcado real, essa decisão seria reavaliada.
+Por ser um trabalho acadêmico, o protótipo não trata radiação, não tem redundância e não passou por certificação de controle de voo. Ele também faz cópias dos módulos para preservar o cadastro original, o que gasta memória extra; em um sistema embarcado de verdade, essa escolha teria de ser revista.
 
 ## 6. Governança ambiental, social e corporativa na base Aurora Siger
 
 ### Introdução
 
-O pouso dos módulos marca a passagem de "chegar a Marte" para "começar a viver em Marte". A partir desse momento, as decisões da colônia deixam de ser apenas técnicas e passam a afetar um ambiente ainda intocado, as pessoas que nele vão viver e trabalhar e a confiança em quem decide. Por isso, adotamos como referência os princípios ESG (*Environmental, Social and Governance*) e a definição de desenvolvimento sustentável do Relatório Brundtland: atender às necessidades do presente sem comprometer a capacidade das gerações futuras de atenderem às suas. Em Marte, essas "gerações futuras" são os próximos colonos e a própria ciência, que depende de um planeta preservado para ser estudado.
+Com o pouso dos módulos, a missão deixa de ser "chegar a Marte" e passa a ser "viver em Marte". A partir daí, as decisões da colônia não são mais só técnicas: elas afetam um ambiente que ainda não foi tocado, as pessoas que vão morar e trabalhar ali e a confiança em quem decide. Por isso usamos como base os princípios ESG (*Environmental, Social and Governance*) e a definição de desenvolvimento sustentável do Relatório Brundtland: atender às necessidades do presente sem comprometer as das gerações futuras. Em Marte, essas gerações futuras são os próximos colonos e também a ciência, que precisa de um planeta preservado para estudar.
 
 ### Critérios para a escolha da área de pouso
 
-A escolha da área de pouso deve seguir uma abordagem preventiva, como recomenda o princípio 7 do Pacto Global: diante da incerteza sobre os impactos, evita-se o dano antes de remediá-lo. Na prática, propomos quatro critérios, além da segurança do pouso: (1) evitar regiões de alto interesse científico, preservando-as para pesquisa; (2) preferir áreas próximas a recursos úteis, como gelo e boa incidência solar, para reduzir deslocamentos e consumo de energia; (3) concentrar os pousos em uma área delimitada, limitando a extensão do solo alterado; e (4) registrar o estado original da área antes da ocupação, para permitir comparações futuras. O código verifica disponibilidade da área (`areaCheck`) e condições atmosféricas (`atmCheck`), que são critérios de segurança operacional. A seleção de áreas por impacto ambiental, proteção científica e recursos é uma proposta de governança, ainda não implementada.
+Para escolher a área de pouso, seguimos a abordagem preventiva do princípio 7 do Pacto Global: quando não se sabe bem qual será o impacto, é melhor evitar o dano do que tentar consertar depois. Além da segurança do pouso, propomos quatro critérios: (1) evitar regiões de grande interesse científico, para que continuem disponíveis para pesquisa; (2) dar preferência a áreas perto de recursos úteis, como gelo e boa incidência de sol, para gastar menos energia com deslocamento; (3) concentrar os pousos em uma área delimitada, para alterar menos o solo; e (4) registrar como a área era antes da ocupação, para poder comparar depois. O código hoje confere se a área está livre (`areaCheck`) e se o clima permite o pouso (`atmCheck`), que são critérios de segurança. A escolha da área pelo impacto ambiental, pelo valor científico e pelos recursos fica como proposta de governança, ainda fora do código.
 
 ### Gestão sustentável de energia, resíduos e recursos locais
 
-Na dimensão ambiental, os recursos de Marte são escassos e, em grande parte, não renováveis na escala de tempo da colônia. A gestão proposta se apoia em três Objetivos de Desenvolvimento Sustentável da Agenda 2030. Para a energia (ODS 7), a base deve priorizar a geração solar e a eficiência, ligando primeiro os sistemas de suporte à vida; não por acaso, o módulo de energia está entre os primeiros da fila de pouso. Para a água (ODS 6), o gelo extraído deve ser tratado como recurso compartilhado, com medição do consumo e reaproveitamento em circuito fechado. Para os resíduos e a produção (ODS 12), vale a lógica da economia circular: reparar, reutilizar e reciclar materiais antes de descartá-los, já que não há reposição rápida vinda da Terra. Esses compromissos precisam ser acompanhados por indicadores, como energia gerada e consumida, água reaproveitada e resíduos reciclados, pois declarar uma base "sustentável" sem medir resultados seria uma forma de *greenwashing*.
+Em Marte, quase todos os recursos são escassos e, na escala de tempo da colônia, não se renovam. Por isso baseamos a proposta em três Objetivos de Desenvolvimento Sustentável da Agenda 2030. Na energia (ODS 7), a base deve dar prioridade à geração solar e à eficiência, ligando primeiro o suporte à vida; não é coincidência que o módulo de energia esteja entre os primeiros da fila de pouso. Na água (ODS 6), o gelo extraído precisa ser tratado como recurso de todos, com controle do consumo e reaproveitamento em circuito fechado. Nos resíduos e na produção (ODS 12), a ideia é a da economia circular: consertar, reutilizar e reciclar antes de descartar, já que não chega reposição rápida da Terra. Para isso funcionar, é preciso acompanhar indicadores, como energia gerada e consumida, água reaproveitada e resíduos reciclados. Chamar a base de sustentável sem medir nada seria *greenwashing*.
 
 ### Governança, transparência e participação
 
-Na dimensão social e de governança, uma colônia isolada concentra poder em poucas pessoas e em sistemas automatizados, o que aumenta a importância de regras claras. Propomos: (1) decisões automatizadas com regras públicas e auditáveis, como as expressões booleanas do MGPEB, que qualquer colono pode ler e verificar; (2) registro de todas as ocorrências, como diretriz futura de governança; atualmente a pilha registra somente alertas, com módulo, causa específica, combustível e horário de chegada à órbita. A opção 9 preserva esse histórico, mas reinícios e encerramento o descartam. Registro de decisões completas, responsáveis e horário dos eventos ainda não foi implementado; (3) relatórios periódicos de desempenho ambiental e social, inspirados no modelo da Global Reporting Initiative (GRI); (4) um conselho com representantes das diferentes funções da base, para que decisões sobre uso de recursos sejam discutidas e não apenas impostas; e (5) condições de trabalho seguras, jornadas justas e combate à corrupção, em linha com os princípios de trabalho e o princípio 10 do Pacto Global. A responsabilidade final continua humana: o sistema recomenda, mas as pessoas respondem pelas decisões.
+Uma colônia isolada concentra o poder em poucas pessoas e em sistemas automáticos, e por isso as regras precisam ser claras. Propomos: (1) decisões automáticas com regras públicas, como as expressões booleanas do MGPEB, que qualquer colono pode ler e conferir; (2) registro de todas as ocorrências, como meta para o futuro, já que hoje a pilha guarda só os alertas, com o módulo, a causa, o combustível e o horário de chegada à órbita (a opção 9 mantém esse histórico, mas ele se perde ao reiniciar ou fechar o programa, e ainda não há registro das demais decisões, de quem decidiu nem do horário de cada evento); (3) relatórios periódicos de desempenho ambiental e social, no modelo da Global Reporting Initiative (GRI); (4) um conselho com representantes das diferentes funções da base, para que o uso dos recursos seja discutido e não apenas imposto; e (5) condições de trabalho seguras, jornadas justas e combate à corrupção, de acordo com os princípios de trabalho e o princípio 10 do Pacto Global. No fim, a responsabilidade continua sendo humana: o sistema recomenda, mas quem responde pelas decisões são as pessoas.
 
 ### Conclusão
 
-As diretrizes ESG complementam a simulação de pouso e orientam uma proposta de governança para a colônia. Ao combinar as três dimensões do ESG, o projeto busca o equilíbrio do *triple bottom line* (pessoas, planeta e resultado): uma base tecnicamente viável, que protege as pessoas, usa os recursos com responsabilidade e torna suas decisões transparentes. Em uma fronteira como Marte, que exige governança local compatível com os acordos internacionais, esses princípios são um compromisso voluntário, como o Pacto Global entre as empresas, e valem desde o primeiro pouso.
+As diretrizes ESG completam a simulação de pouso e servem de ponto de partida para a governança da colônia. Juntando as três dimensões, buscamos o equilíbrio do *triple bottom line* (pessoas, planeta e resultado): uma base que funcione tecnicamente, proteja as pessoas, use os recursos com cuidado e tome decisões de forma transparente. Marte vai precisar de uma governança local que respeite os acordos internacionais. Esses princípios funcionam como um compromisso voluntário, parecido com o do Pacto Global entre as empresas, e devem valer desde o primeiro pouso.
 
 ## 7. Conclusão
 
-O MGPEB integra os conteúdos da Fase 2 em um único problema. As portas lógicas definem as regras de decisão; o Python as executa com estruturas condicionais e laços; as estruturas lineares organizam o fluxo dos módulos; a busca e a ordenação priorizam o pouso; a função quadrática indica o momento de acionar os retropropulsores; a história da computação explica as limitações do hardware embarcado; e os princípios ESG orientam o uso responsável da tecnologia e dos recursos de Marte.
+O MGPEB juntou os conteúdos da Fase 2 em um único problema. As portas lógicas definem as regras de decisão, o Python executa essas regras com condicionais e laços, as estruturas lineares organizam o caminho dos módulos, a busca e a ordenação definem quem pousa primeiro e a função quadrática indica a hora de acionar os retropropulsores. A história da computação ajuda a entender os limites do hardware embarcado, e os princípios ESG orientam o uso da tecnologia e dos recursos de Marte.
 
-No modo base, dois módulos pousaram, um ficou em espera e dois foram retidos em alerta por motivos distintos (falha de sensores e combustível crítico). O caso do M03, que aguarda com 33% de combustível enquanto o M04 vai para revisão com 28%, demonstra que as regras distinguem um problema grave de uma simples espera. Como evoluções, identificamos: modelar a fase de frenagem após o acionamento dos retropropulsores e substituir a lista da fila por uma estrutura com retirada em tempo constante caso a frota cresça.
+No modo base, dois módulos pousaram, um ficou em espera e dois ficaram em alerta por motivos diferentes (sensores com falha e combustível crítico). A comparação entre o M03, que espera com 33% de combustível, e o M04, que vai para revisão com 28%, mostra que as regras separam um problema grave de uma espera simples. Como próximos passos, vemos dois: modelar a frenagem depois do acionamento dos retropropulsores e trocar a lista da fila por uma estrutura que retire o primeiro elemento em tempo constante, caso a frota cresça.
 
 ## Anexo A – Estruturas de dados utilizadas
 
+![Figura 3 – Fluxo da simulação: cenário, fila ordenada, avaliação, listas auxiliares, reavaliação dos pendentes e pilha de alertas](../diagramas/diagrama-fluxo-mgpeb.png)
+
 | Estrutura | Variável | Tipo | Operações usadas | Papel na simulação |
 | --- | --- | --- | --- | --- |
-| Fila principal | filaPouso | Fila (FIFO) sobre list | append para inserir; `pop(0)` para retirar da frente | módulos aguardando avaliação, na ordem de prioridade |
+| Fila principal | filaPouso | Fila (FIFO) sobre list | append para inserir; `pop(0)` para retirar da frente | módulos esperando avaliação, na ordem de prioridade |
 | Lista de pousados | modsPousados | Lista | append | módulos com pouso autorizado |
 | Lista de espera | modsEspera | Lista | append | módulos com pouso adiado |
-| Lista de alerta | modsAlerta | Lista | append | módulos que exigem revisão |
-| Pilha de alertas | pilhaAlertas | Pilha (LIFO) sobre list | append para empilhar; pop para desempilhar | registro de alertas; o mais recente é revisado primeiro |
-| Cadastro | todosMods | Lista de dicionários | percurso com for | base para buscas e para a carga da fila |
+| Lista de alerta | modsAlerta | Lista | append | módulos que precisam de revisão |
+| Pilha de alertas | pilhaAlertas | Pilha (LIFO) sobre list | append para empilhar; pop para desempilhar | histórico de alertas; o mais recente é revisado primeiro |
+| Cadastro | todosMods | Lista de dicionários | percurso com for | base para as buscas e para carregar a fila |
 
-**Fila (FIFO).** A função `carregarFila` insere os cinco módulos com append, e `prepararFilaOrdenada` substitui o conteúdo pela versão ordenada: M02, M01, M05, M03, M04. Em `processarFila`, o laço while `len(filaPouso) > 0` executa `filaPouso.pop(0)`, que retira sempre o módulo da frente, como o dequeue de uma fila. Assim, a primeira a sair é M02 e a última é M04. Em uma lista Python, `pop(0)` tem custo O(n), pois os demais elementos são deslocados; para cinco módulos o custo é desprezível, e em uma frota grande `collections.deque` faria a mesma operação em O(1).
+**Fila (FIFO).** A função `carregarFila` coloca os cinco módulos na fila com append, e `prepararFilaOrdenada` troca o conteúdo pela versão ordenada: M02, M01, M05, M03, M04. Em `processarFila`, o laço while `len(filaPouso) > 0` chama `filaPouso.pop(0)`, que sempre tira o módulo da frente, como o dequeue de uma fila. Assim, o primeiro a sair é o M02 e o último é o M04. Em uma lista do Python, `pop(0)` custa O(n), porque os outros elementos andam uma posição. Com cinco módulos isso não faz diferença; com uma frota grande, `collections.deque` faria a mesma coisa em O(1).
 
-**Listas auxiliares.** Depois da decisão, cada módulo vai para exatamente uma lista. No modo base: modsPousados = [M02, M01]; modsEspera = [M03]; modsAlerta = [M05, M04]. Essas listas permitem montar o resumo final (opção 5) sem reprocessar a fila.
+**Listas auxiliares.** Depois da decisão, cada módulo vai para uma única lista. No modo base, ficam modsPousados = [M02, M01], modsEspera = [M03] e modsAlerta = [M05, M04]. Com essas listas, o resumo final (opção 5) é montado sem processar a fila de novo.
 
-**Reavaliação.** Após a opção 7, a fila está vazia, os pousados são [M02, M01], a espera é [M03] e os alertas atuais são [M05, M04]. Na opção 9, manter o ambiente e alterar somente M03 para 40% leva a pousados = [M02, M01, M03], espera = [] e alertas = [M05, M04], sem alterar os dois eventos históricos. Não confirmar a revisão dos alertas nesse exemplo.
+**Reavaliação.** Depois da opção 7, a fila está vazia, os pousados são [M02, M01], a espera é [M03] e os alertas são [M05, M04]. Se, na opção 9, mantivermos o ambiente, mudarmos só o combustível do M03 para 40% e não confirmarmos a revisão dos alertas, o resultado é pousados = [M02, M01, M03], espera = [] e alertas = [M05, M04]. Os dois registros que já estavam na pilha continuam lá.
 
-**Pilha (LIFO).** A função `registrarAlerta` empilha, com append, um registro com id, nome, motivo, combustível e horário de órbita. No modo base, M05 é empilhado primeiro e M04 depois, ficando no topo. Para exibir a pilha sem destruí-la, `mostrarPilhaAlertas` copia os itens para uma pilha temporária e desempilha dessa cópia com pop; por isso, a exibição mostra primeiro M04 e depois M05, e a pilha original permanece intacta para novas consultas. Consultar o histórico não significa que todos esses alertas continuem ativos; os pendentes atuais estão em modsAlerta.
-
-![Figura 3 – Fluxo da simulação: cenário, fila ordenada, avaliação, listas auxiliares e pilha de alertas](../diagramas/diagrama-fluxo-mgpeb.png)
-
-
-## Referências
-
-Fontes consultadas para esta revisão em 12 out. 2026. Os parâmetros e limites do cenário são escolhas didáticas da equipe, não valores aeroespaciais extraídos dessas fontes.
-
-- COMPUTER HISTORY MUSEUM. The Engines. Memória, processamento e programação na Máquina Analítica. https://www.computerhistory.org/babbage/engines/
-- COMPUTER HISTORY MUSEUM. Timeline of Computer History, 1946. Contexto do ENIAC. https://www.computerhistory.org/timeline/1946/
-- INTEL. Moore's Law. Contextualização da evolução dos circuitos integrados. https://www.intel.com/content/www/us/en/history/virtual-vault/articles/moores-law.html
-- NASA. NASA to Test Solution for Radiation-Tolerant Computing in Space. 2025. Computadores embarcados e efeitos da radiação. https://www.nasa.gov/missions/artemis/nasa-to-test-solution-for-radiation-tolerant-computing-in-space/
-- UNITED NATIONS. Sustainability. Síntese da definição da Comissão Brundtland de 1987. https://www.un.org/en/node/82190
-- UNITED NATIONS. The 17 Goals. Objetivos 6, 7 e 12 usados como referência conceitual de recursos, energia e resíduos. https://sdgs.un.org/goals
-- UNITED NATIONS GLOBAL COMPACT. The Ten Principles. Princípios ambientais, de trabalho e de combate à corrupção. https://unglobalcompact.org/what-is-gc/mission/principles
-- GLOBAL REPORTING INITIATIVE. GRI Standards. Referência para a proposta de prestação de contas, sem alegação de conformidade do protótipo. https://www.globalreporting.org/standards/
+**Pilha (LIFO).** A função `registrarAlerta` empilha, com append, um registro com id, nome, motivo, combustível e horário de órbita. No modo base, o M05 é empilhado primeiro e o M04 depois, ficando no topo. Para mostrar a pilha sem apagá-la, `mostrarPilhaAlertas` copia os itens para uma pilha temporária e desempilha essa cópia com pop. Por isso a tela mostra primeiro o M04 e depois o M05, e a pilha original continua inteira. A pilha é um histórico: um alerta que aparece nela pode já ter sido resolvido. Os alertas ainda pendentes ficam em modsAlerta.

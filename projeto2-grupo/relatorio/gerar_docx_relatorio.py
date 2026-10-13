@@ -47,7 +47,7 @@ TAM_TABELA = 8
 
 # Quebras opcionais: (tipo do bloco, inicio do texto).
 # "corte" divide um paragrafo antes do trecho indicado.
-QUEBRAS = [("secao", "Referências")]  # Mantem o titulo junto da bibliografia.
+QUEBRAS = []  # Ex.: [("secao", "Titulo da secao")] forca nova pagina antes dela.
 
 
 # Fontes do PDF, registradas so para medir as larguras das colunas com a mesma regra.

@@ -6,9 +6,8 @@ import random
 # Antes a Aurora Siger decidia se podia decolar; agora ela ja esta em Marte
 # e precisa organizar a chegada dos modulos que formam a base inicial.
 
-# Variaveis principais da simulacao
-# Por isso, as configuracoes gerais, os limites e as colecoes principais aparecem
-# logo no comeco do arquivo.
+# Variaveis principais da simulacao.
+# Deixamos configuracoes, limites e listas aqui em cima para facilitar a leitura.
 nomeSistema = "AURORA SIGER - MGPEB"
 versaoSistema = "V3"
 opcaoMenu = "-1"
@@ -330,7 +329,7 @@ def ordenarFilaAtual():
 
 
 def lerSimNao(msg):
-    # Uma resposta invalida nao deve liberar a revisao de um alerta.
+    # Repete a pergunta ate a resposta ser S ou N.
     while True:
         resposta = lerTexto(msg)
         if resposta == "S" or resposta == "N":
@@ -339,9 +338,8 @@ def lerSimNao(msg):
 
 
 def ajustarPendente(mod):
-    global modoDados
-
-    # Altera a copia operacional; o cadastro base continua disponivel para reinicio.
+    # Mexe so na copia do modulo; o cadastro original continua igual.
+    # Por isso o modo de dados nao muda (as opcoes 3 e 7 recarregam o cadastro).
     mostrarModulo(mod)
     if lerSimNao("Ajustar os dados deste modulo? S ou N: ") == "S":
         mod["prio"] = lerInt("Prioridade de pouso 1 a 5: ", 1, 5)
@@ -352,7 +350,6 @@ def ajustarPendente(mod):
             mod["sens"] = "FUNCIONAIS"
         else:
             mod["sens"] = "FALHA PARCIAL"
-        modoDados = "MANUAL"
 
 
 def devolverPendente(mod):
@@ -402,7 +399,7 @@ def reavaliarPendentes():
     for mod in alertasMantidos:
         modsAlerta.append(mod)
 
-    # Preserva os pousados e a pilha. A revisao nao dispensa os checks de seguranca.
+    # Os pousados e a pilha continuam como estavam; os pendentes passam pelos checks de novo.
     if len(filaPouso) > 0:
         ordenarFilaAtual()
         filaProcessadaCheck = False
@@ -413,7 +410,7 @@ def reavaliarPendentes():
 
 
 def mostrarModulo(mod):
-    # Mostra um modulo em uma linha compacta, como um registro operacional.
+    # Mostra um modulo em uma linha so.
     print(
         f"{mod['id']} | {mod['nome']} | tipo {mod['tipo']} | "
         f"prio {mod['prio']} | comb {mod['comb']}% | "
@@ -516,8 +513,8 @@ def buscarPorTipo(listaMods, tipoBusca):
 
 
 def calcularChecks(mod):
-    # Cada check vira uma entrada booleana para a regra de autorizacao.
-    # Essa parte conversa diretamente com o diagrama de portas logicas do relatorio.
+    # Cada check vira uma entrada booleana da regra de autorizacao.
+    # Sao as mesmas entradas A a E do diagrama de portas logicas.
     combCheck = mod["comb"] >= limCombMin
     atmCheck = (
         condAtm == "ESTAVEL"
@@ -540,7 +537,7 @@ def calcularChecks(mod):
 
 def avaliarPouso(mod):
     # AUTORIZAR = combCheck AND atmCheck AND areaCheck AND sensCheck AND massaCheck.
-    # Em outras palavras: uma unica condicao falsa ja segura o pouso.
+    # Basta uma condicao falsa para o pouso nao ser autorizado.
     checks = calcularChecks(mod)
     autPouso = (
         checks["combCheck"]
@@ -556,7 +553,7 @@ def avaliarPouso(mod):
     if autPouso:
         return "AUTORIZADO", "Todas as condicoes de pouso foram atendidas.", checks
     elif falhaCritica:
-        # Registra cada causa critica, inclusive quando as duas ocorrem juntas.
+        # Monta o motivo com as causas do alerta (pode ser uma ou as duas).
         motivo = ""
         if not checks["combCheck"] and mod["comb"] < 30:
             motivo = f"Combustivel critico: {mod['comb']}%, abaixo de 30%."
@@ -570,8 +567,8 @@ def avaliarPouso(mod):
 
 
 def registrarAlerta(mod, motivo):
-    # A pilha guarda alertas para revisao operacional.
-    # O ultimo problema detectado fica no topo, simulando uma triagem imediata.
+    # A pilha guarda os alertas para revisao.
+    # O ultimo alerta fica no topo, entao e o primeiro a ser olhado.
     alerta = {
         "id": mod["id"],
         "nome": mod["nome"],
@@ -585,8 +582,8 @@ def registrarAlerta(mod, motivo):
 def processarFila():
     global filaProcessadaCheck
 
-    # Esta e a rotina central do MGPEB.
-    # A cada volta, um modulo sai da frente da fila e recebe uma decisao.
+    # Parte principal do MGPEB: a cada volta, um modulo sai da frente da fila
+    # e recebe uma decisao.
     mostrarTitulo("PROCESSAMENTO DA FILA DE POUSO")
 
     if filaProcessadaCheck:
@@ -683,7 +680,7 @@ def alturaDescida(tempoS):
 
 
 def mostrarModeloDescida():
-    # Apresenta a funcao matematica em formato que possa ir para o relatorio.
+    # Mostra a funcao da descida e alguns valores de h(t).
     mostrarTitulo("MODELO MATEMATICO DA DESCIDA")
     print(f"h(t) = {altInicialM} - {coefDescida:.4f} * t^2")
     print("t representa o tempo em segundos e h(t) representa a altura em metros.")
@@ -703,7 +700,7 @@ def mostrarModeloDescida():
 
 
 def mostrarRegrasLogicas():
-    # Texto curto para ligar o codigo ao diagrama de portas logicas.
+    # Resumo das regras, igual ao que esta no diagrama de portas logicas.
     mostrarTitulo("REGRAS LOGICAS DO MGPEB")
     print("A = combCheck")
     print("B = atmCheck")
@@ -727,7 +724,7 @@ def mostrarResumoFinal():
 
 
 def mostrarMenu():
-    # Menu simples para demonstrar repeticao com while e escolha com if encadeado.
+    # Opcoes do menu principal.
     print("\nEscolha uma opcao do MGPEB:")
     print("1 - Mostrar regras logicas")
     print("2 - Executar buscas lineares")
@@ -756,8 +753,7 @@ def executarDemoCompleta():
 def main():
     global opcaoMenu
 
-    # O menu fica ativo ate o usuario escolher sair.
-    # Isso mostra a aplicacao direta do while estudado na Fase 2.
+    # O menu fica rodando no while ate o usuario escolher 0.
     mostrarTitulo(f"{nomeSistema} - {versaoSistema}")
 
     while opcaoMenu != "0":
